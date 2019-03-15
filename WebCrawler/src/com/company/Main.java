@@ -12,6 +12,8 @@ public class Main {
         DBManager db = new DBManager(url+dbName, user, password);
         db.connect();
 
+        WebCrawler theAmazingSpiderman = new WebCrawler();
+        theAmazingSpiderman.getPageLinks("http://www.mkyong.com/");
     }
 
 }
