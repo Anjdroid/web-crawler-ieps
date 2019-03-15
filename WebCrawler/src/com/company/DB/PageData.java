@@ -1,4 +1,4 @@
-package com.company;
+package com.company.DB;
 
 public class PageData {
 
@@ -6,6 +6,12 @@ public class PageData {
     private int pageId;
     private String dataTypeCode;
     private byte[] data;
+
+    public PageData(int pageId, String dataTypeCode, byte[] data) {
+        this.pageId = pageId;
+        this.dataTypeCode = dataTypeCode;
+        this.data = data;
+    }
 
     public byte[] getData() {
         return data;

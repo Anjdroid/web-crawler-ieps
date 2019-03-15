@@ -1,4 +1,4 @@
-package com.company;
+package com.company.DB;
 
 public class Site {
 
@@ -6,6 +6,12 @@ public class Site {
     private String domain;
     private String robotsRontent;
     private String sitemapContent;
+
+    public Site(String domain, String robotsRontent, String sitemapContent) {
+        this.domain = domain;
+        this.robotsRontent = robotsRontent;
+        this.sitemapContent = sitemapContent;
+    }
 
     public void setSitemapContent(String sitemapContent) {
         this.sitemapContent = sitemapContent;

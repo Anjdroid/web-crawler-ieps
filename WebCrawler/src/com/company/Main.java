@@ -1,5 +1,7 @@
 package com.company;
 
+import com.company.DB.DBManager;
+
 public class Main {
 
     private static String url = "jdbc:postgresql://localhost:5432/";

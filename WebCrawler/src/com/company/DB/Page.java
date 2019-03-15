@@ -1,4 +1,4 @@
-package com.company;
+package com.company.DB;
 
 import java.sql.Timestamp;
 
@@ -11,6 +11,15 @@ public class Page {
     private String htmlContent;
     private int httpStatusCode;
     private Timestamp accessedTime;
+
+    public Page(int siteId, String pageTypeCode, String url, String htmlContent, int httpStatusCode, Timestamp accessedTime) {
+        this.siteId = siteId;
+        this.pageTypeCode = pageTypeCode;
+        this.url = url;
+        this.htmlContent = htmlContent;
+        this.httpStatusCode = httpStatusCode;
+        this.accessedTime = accessedTime;
+    }
 
     public void setAccessedTime(Timestamp accessedTime) {
         this.accessedTime = accessedTime;

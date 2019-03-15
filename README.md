@@ -25,8 +25,8 @@ TODO:
 * Data extractor: Minimal functionalities to extract images and hyperlinks.
 	* link parsing: include links from href & onlick JS events (location.href, document.location)
 	* correctly extend relative URLs be4 adding them to frontier
-	* detect images on web page (only img tag, where src points to image URL)
-	* download other files that pages point to (no need to parse) -> .pdf, .doc, .docx, .ppt, .pptx
+	* detect images on web page (only img tag, where src points to image URL) (A)
+	* download other files that pages point to (no need to parse) -> .pdf, .doc, .docx, .ppt, .pptx (A)
 
 * Duplicate detector: To detect already parsed pages.
 	* check already parsed urls, check urls in frontier
@@ -40,7 +40,7 @@ TODO:
 	* robots.txt (user-agent, allow, disallow, crawl-delay)
 	* sitemap -> if it exsits, add all urls to frontier
 
-* Datastore: To store the data and additional metadata used by the crawler. (postgresql)
+* Datastore: To store the data and additional metadata used by the crawler. (postgresql) (A)
 	* create schema using prepared script
 	************************************
 	Table site contains web site specific data. Each site can contain multiple web pages - 

@@ -1,4 +1,4 @@
-package com.company;
+package com.company.DB;
 
 import java.sql.Timestamp;
 
@@ -10,6 +10,14 @@ public class Image {
     private String contentType;
     private Timestamp accessedTime;
     private byte[] data;
+
+    public Image(int pageId, String filename, String contentType, Timestamp accessedTime, byte[] data) {
+        this.pageId = pageId;
+        this.filename = filename;
+        this.contentType = contentType;
+        this.accessedTime = accessedTime;
+        this.data = data;
+    }
 
     public void setData(byte[] data) {
         this.data = data;

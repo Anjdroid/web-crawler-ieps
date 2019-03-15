@@ -1,4 +1,4 @@
-package com.company;
+package com.company.DB;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -6,8 +6,6 @@ import java.sql.SQLException;
 import java.util.logging.Logger;
 
 public class DBManager {
-
-    // jdbc:postgresql://localhost:5432/crawldb", "postgres", "postgres"
 
     private String url;
     private String user;
