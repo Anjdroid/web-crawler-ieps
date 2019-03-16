@@ -1,6 +1,9 @@
 package com.company;
 
 import com.company.DB.DBManager;
+import com.company.DB.Image;
+import com.company.DB.Page;
+import com.company.DB.Site;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -8,13 +11,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.sql.Timestamp;
 import java.util.HashSet;
-import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
 public class WebCrawler {
@@ -41,19 +41,18 @@ public class WebCrawler {
                 // response code of url
                 Connection.Response response = Jsoup.connect(URL).followRedirects(false).execute();
                 int statusCode = response.statusCode();
-                LOGGER.info("response code "+statusCode);
 
                 // fetch HTML code
                 Document document = Jsoup.connect(URL).get();
 
                 // TODO: get proper domain name for site
-                // URL.split("/")[2].substring(4)
-                int siteId = Main.db.saveSite(URL.split("/")[2].substring(4),"","");
+                String domain = URL.split("/")[2].substring(4);
 
-                // save && page to db
+                // save site && page to db
                 // TODO: check site && page for duplicates
-                int pageId = Main.db.savePage(siteId, "HTML", URL, document.html(), statusCode, timestamp);
-                LOGGER.info("html "+document.html());
+                // duplicate page: dont set the html_content value && link to the duplicate version of the page
+                int siteId = Main.db.saveSite(new Site(domain,"",""));
+                int pageId = Main.db.savePage(new Page(siteId, "HTML", URL, document.html(), statusCode, timestamp));
 
                 // fetch images on page
                 Elements imagesOnPage = document.select("img[src~=(?i)\\.(png|jpe?g|svg|gif)]");
@@ -65,8 +64,6 @@ public class WebCrawler {
 
                 // more links yay
                 for (Element page : linksOnPage) {
-                    // TODO: check links for DOC endings
-                    // and save documents instead
                     getPageLinks(page.attr("abs:href"));
                 }
 
@@ -94,7 +91,7 @@ public class WebCrawler {
             Timestamp accessTime = new Timestamp(System.currentTimeMillis());
 
             // time to save image to DB
-            Main.db.saveImage(filename, contentType, imageData, accessTime, pageId);
+            Main.db.saveImage(new Image(pageId, filename, contentType, accessTime, imageData));
 
             LOGGER.info("image data type: " + filename + " " + contentType + " " + accessTime);
 
