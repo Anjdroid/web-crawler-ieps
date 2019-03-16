@@ -2,6 +2,11 @@ package com.company.DB;
 
 public class PageType {
 
+    /*
+    page type codes
+    HTML, BINARY, DUPLICATE and FRONTIER
+     */
+
     private String code;
 
     public PageType(String code) {
