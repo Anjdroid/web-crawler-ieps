@@ -31,7 +31,7 @@ public class DBManager {
         return conn;
     }
 
-    public int savePage(int siteId, String pageTypeCode, String url, String htmlContent, int httpStatusCode, Timestamp tm) {
+    public int savePage(Page page) {
         /*String code = "";
         String q = "SELECT code FROM crawldb.page_type WHERE code = HTML";
         try {
@@ -54,12 +54,12 @@ public class DBManager {
         try {
             PreparedStatement pst = Main.conn.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
 
-            pst.setInt(1, siteId);
-            pst.setString(2, pageTypeCode);
-            pst.setString(3, url);
-            pst.setString(4, htmlContent);
-            pst.setInt(5, httpStatusCode);
-            pst.setTimestamp(6, tm);
+            pst.setInt(1, page.getSiteId());
+            pst.setString(2, page.getPageTypeCode());
+            pst.setString(3, page.getUrl());
+            pst.setString(4, page.getHtmlContent());
+            pst.setInt(5, page.getHttpStatusCode());
+            pst.setTimestamp(6, page.getAccessedTime());
             pst.executeUpdate();
 
             ResultSet rs = pst.getGeneratedKeys();
@@ -75,16 +75,17 @@ public class DBManager {
         return pageId;
     }
 
-    public int saveSite(String domain, String robotsContent, String sitemapContent) {
+    public int saveSite(Site site) {
+
         int siteId = 0;
         String query = "INSERT INTO crawldb.site(domain, robots_content, sitemap_content) VALUES(?, ?, ?)";
 
         try {
             PreparedStatement pst = Main.conn.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
 
-            pst.setString(1, domain);
-            pst.setString(2, robotsContent);
-            pst.setString(3, sitemapContent);
+            pst.setString(1, site.getDomain());
+            pst.setString(2, site.getRobotsRontent());
+            pst.setString(3, site.getSitemapContent());
             pst.executeUpdate();
 
             ResultSet rs = pst.getGeneratedKeys();
@@ -100,17 +101,17 @@ public class DBManager {
         return siteId;
     }
 
-    public void saveImage(String filename, String contentType, byte[] content, Timestamp tm, int pageId) {
+    public void saveImage(Image image) {
         String query = "INSERT INTO crawldb.image(page_id, filename, content_type, data, accessed_time) VALUES(?, ?, ?, ?, ?)";
 
         try {
             PreparedStatement pst = Main.conn.prepareStatement(query);
 
-            pst.setInt(1, pageId);
-            pst.setString(2, filename);
-            pst.setString(3, contentType);
-            pst.setBytes(4, content);
-            pst.setTimestamp(5, tm);
+            pst.setInt(1, image.getPageId());
+            pst.setString(2, image.getFilename());
+            pst.setString(3, image.getContentType());
+            pst.setBytes(4, image.getData());
+            pst.setTimestamp(5, image.getAccessedTime());
             pst.executeUpdate();
 
         } catch (SQLException ex) {
@@ -118,8 +119,41 @@ public class DBManager {
         }
     }
 
-    public void savePageData() {
+    public void savePageData(PageData pageData) {
 
+        // when saving page data -- still save page BUT html_content is set to NULL
+        // and create page data record
+        // page code type is BINARY
+
+        String query = "INSERT INTO crawldb.page_data(page_id, data_type_code, data) VALUES(?, ?, ?)";
+
+        try {
+            PreparedStatement pst = Main.conn.prepareStatement(query);
+
+            pst.setInt(1, pageData.getPageId());
+            pst.setString(2, pageData.getDataTypeCode());
+            pst.setBytes(3, pageData.getData());
+            pst.executeUpdate();
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
+    public void setLinkToFromPage(Link link) {
+        String query = "INSERT INTO crawldb.link(from_page, to_page) VALUES(?, ?)";
+
+        try {
+            PreparedStatement pst = Main.conn.prepareStatement(query);
+
+            pst.setInt(1, link.getFromPage());
+            pst.setInt(2, link.getToPage());
+            pst.executeUpdate();
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 
 
