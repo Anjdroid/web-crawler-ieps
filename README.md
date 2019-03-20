@@ -19,11 +19,11 @@ dodatnih 5:
 TODO:
 
 * HTTP downloader and renderer: To retrieve and render a web page.
-	* multiple workers, parallel retrieval
+	* multiple workers (A), parallel retrieval
 	* # of workers = starting parameter of crawler
 
 * Data extractor: Minimal functionalities to extract images and hyperlinks.
-	* link parsing: include links from href & onlick JS events (location.href, document.location)
+	* link parsing: include links from href & onlick JS events (location.href, document.location) (A)
 	* correctly extend relative URLs be4 adding them to frontier
 	* detect images on web page (only img tag, where src points to image URL) (A)
 	* download other files that pages point to (no need to parse) -> .pdf, .doc, .docx, .ppt, .pptx (A)
