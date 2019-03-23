@@ -75,6 +75,40 @@ public class DBManager {
         return pageId;
     }
 
+    public int getSiteFromDomain(String domain) {
+        int siteId = 0;
+        String query = "SELECT id FROM crawldb.site WHERE domain =\'"+ domain + "\' ";
+        try {
+            PreparedStatement pst = Main.conn.prepareStatement(query);
+
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                siteId = rs.getInt("id");
+            }
+            System.out.println("site id"+ siteId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return siteId;
+    }
+
+    public int getPageFromUrl(String url) {
+        int pageId = 0;
+        String query = "SELECT id FROM crawldb.page WHERE url =\'"+ url + "\' ";
+        try {
+            PreparedStatement pst = Main.conn.prepareStatement(query);
+
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                pageId = rs.getInt("id");
+            }
+            System.out.println("page id"+ pageId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return pageId;
+    }
+
     public int saveSite(Site site) {
 
         int siteId = 0;
@@ -120,10 +154,6 @@ public class DBManager {
     }
 
     public void savePageData(PageData pageData) {
-
-        // when saving page data -- still save page BUT html_content is set to NULL
-        // and create page data record
-        // page code type is BINARY
 
         String query = "INSERT INTO crawldb.page_data(page_id, data_type_code, data) VALUES(?, ?, ?)";
 
