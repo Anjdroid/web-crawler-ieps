@@ -1,5 +1,6 @@
 package com.company;
 
+
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -7,6 +8,7 @@ import java.util.Set;
 
 public class Scheduler {
 
+    // frontier
     private static Queue<String> frontier;
 
     //URLs already visited
@@ -15,7 +17,6 @@ public class Scheduler {
     public Scheduler() {
         frontier = new LinkedList<>();
         visited = new HashSet<>();
-
         frontier.add("podatki.gov.si");
         frontier.add("evem.gov.si");
         frontier.add("e-uprava.gov.si");
@@ -35,16 +36,9 @@ public class Scheduler {
         return visited;
     }
 
-    public static void schedule(String page) {
-        int pageHashCode = page.hashCode();
-        if (checkForDuplicates(pageHashCode)) {
-            visited.add(pageHashCode);
-            frontier.add(page);
-        }
-    }
-
-    public static boolean checkForDuplicates(int page) {
-        if (!visited.contains((page))) {
+    public static boolean isDuplicate(String page) {
+        // check if URL in visited pages or in frontier
+        if (!visited.contains(page.hashCode()) && !frontier.contains(page)) {
             return false;
         }
         return true;

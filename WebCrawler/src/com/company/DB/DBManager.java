@@ -32,22 +32,6 @@ public class DBManager {
     }
 
     public int savePage(Page page) {
-        /*String code = "";
-        String q = "SELECT code FROM crawldb.page_type WHERE code = HTML";
-        try {
-            PreparedStatement ps = Main.conn.prepareStatement(q);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                code = rs.getString("code");
-            }
-            ps.close();
-
-            LOGGER.info("code "+code);
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }*/
-
         int pageId = 0;
         String query = "INSERT INTO crawldb.page(site_id, page_type_code, url, html_content, http_status_code, accessed_time) VALUES(?, ?, ?, ?, ?, ?)";
 
@@ -76,7 +60,7 @@ public class DBManager {
     }
 
     public int getSiteFromDomain(String domain) {
-        int siteId = 0;
+        int siteId = -1;
         String query = "SELECT id FROM crawldb.site WHERE domain =\'"+ domain + "\' ";
         try {
             PreparedStatement pst = Main.conn.prepareStatement(query);
@@ -85,28 +69,33 @@ public class DBManager {
             if (rs.next()) {
                 siteId = rs.getInt("id");
             }
-            System.out.println("site id"+ siteId);
+            LOGGER.info("site id from domain "+ siteId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return siteId;
     }
 
-    public int getPageFromUrl(String url) {
-        int pageId = 0;
-        String query = "SELECT id FROM crawldb.page WHERE url =\'"+ url + "\' ";
+    public Page getPageFromUrl(String url) {
+        String query = "SELECT id, site_id, http_status_code, \n" +
+                "       \n" +
+                "  FROM crawldb.pageurl WHERE url =\'"+ url + "\'";
+
+        Page p = new Page();
         try {
             PreparedStatement pst = Main.conn.prepareStatement(query);
 
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
-                pageId = rs.getInt("id");
+                p.setId(rs.getInt("id"));
+                p.setSiteId(rs.getInt("site_id"));
+                p.setHttpStatusCode(rs.getInt("http_status_code"));
             }
-            System.out.println("page id"+ pageId);
+            LOGGER.info("getting page id from url "+ p.getHttpStatusCode());
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return pageId;
+        return p;
     }
 
     public int saveSite(Site site) {
@@ -127,7 +116,7 @@ public class DBManager {
             if (rs.next()) {
                 siteId = rs.getInt(1);
             }
-            LOGGER.info("PAGE ID after inserted: "+siteId);
+            LOGGER.info("SITE ID after inserted: "+siteId);
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -148,6 +137,8 @@ public class DBManager {
             pst.setTimestamp(5, image.getAccessedTime());
             pst.executeUpdate();
 
+            LOGGER.info("image inserted ");
+
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -165,6 +156,8 @@ public class DBManager {
             pst.setBytes(3, pageData.getData());
             pst.executeUpdate();
 
+            LOGGER.info("page data inserted ");
+
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -180,6 +173,8 @@ public class DBManager {
             pst.setInt(1, link.getFromPage());
             pst.setInt(2, link.getToPage());
             pst.executeUpdate();
+
+            LOGGER.info("link from to inserted "+link.getFromPage() + " "+ link.getToPage());
 
         } catch (SQLException ex) {
             ex.printStackTrace();

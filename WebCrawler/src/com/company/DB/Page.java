@@ -12,6 +12,10 @@ public class Page {
     private int httpStatusCode;
     private Timestamp accessedTime;
 
+    public Page() {
+
+    }
+
     public Page(int siteId, String pageTypeCode, String url, String htmlContent, int httpStatusCode, Timestamp accessedTime) {
         this.siteId = siteId;
         this.pageTypeCode = pageTypeCode;
