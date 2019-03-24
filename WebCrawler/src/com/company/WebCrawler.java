@@ -269,9 +269,9 @@ public class WebCrawler implements Runnable {
             response = out.toByteArray();
 
 
-            FileOutputStream fos = new FileOutputStream(filename);
+            /*FileOutputStream fos = new FileOutputStream(filename);
             fos.write(response);
-            fos.close();
+            fos.close();*/
 
         } catch (IOException ex) {
             LOGGER.info("shit went down while trying to get image data");
