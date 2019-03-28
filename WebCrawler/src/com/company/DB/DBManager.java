@@ -33,7 +33,7 @@ public class DBManager {
 
     public int savePage(Page page) {
         int pageId = 0;
-        String query = "INSERT INTO crawldb.page(site_id, page_type_code, url, html_content, http_status_code, accessed_time) VALUES(?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO crawldb.page(site_id, page_type_code, url, html_content, http_status_code, accessed_time) VALUES(?, ?, ?, ?, ?, ?, ?)";
 
         try {
             PreparedStatement pst = Main.conn.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
@@ -44,6 +44,7 @@ public class DBManager {
             pst.setString(4, page.getHtmlContent());
             pst.setInt(5, page.getHttpStatusCode());
             pst.setTimestamp(6, page.getAccessedTime());
+            pst.setInt(7, page.getHashcode());
             pst.executeUpdate();
 
             ResultSet rs = pst.getGeneratedKeys();
@@ -61,9 +62,10 @@ public class DBManager {
 
     public int getSiteFromDomain(String domain) {
         int siteId = -1;
-        String query = "SELECT id FROM crawldb.site WHERE domain =\'"+ domain + "\' ";
+        String query = "SELECT id FROM crawldb.site WHERE domain = ?";
         try {
             PreparedStatement pst = Main.conn.prepareStatement(query);
+            pst.setString(1, domain);
 
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
@@ -77,13 +79,12 @@ public class DBManager {
     }
 
     public int getPageFromHash(int hash) {
-        String query = "SELECT id \n" +
-                "       \n" +
-                "  FROM crawldb.page WHERE hashcode =\'"+ hash + "\'";
+        String query = "SELECT id FROM crawldb.page WHERE hashcode = ?";
 
         int id = -1;
         try {
             PreparedStatement pst = Main.conn.prepareStatement(query);
+            pst.setInt(1, hash);
 
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
@@ -97,19 +98,19 @@ public class DBManager {
     }
 
     public Page getPageFromUrl(String url) {
-        String query = "SELECT id, site_id, http_status_code \n" +
-                "       \n" +
-                "  FROM crawldb.page WHERE url =\'"+ url + "\'";
+        String query = "SELECT id, site_id, http_status_code, hashcode FROM crawldb.page WHERE url = ?";
 
         Page p = new Page();
         try {
             PreparedStatement pst = Main.conn.prepareStatement(query);
+            pst.setString(1, url);
 
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
                 p.setId(rs.getInt("id"));
                 p.setSiteId(rs.getInt("site_id"));
                 p.setHttpStatusCode(rs.getInt("http_status_code"));
+                p.setHashcode(rs.getInt("hashcode"));
             }
             LOGGER.info("getting page id from url "+ p.getHttpStatusCode());
         } catch (SQLException e) {

@@ -2,7 +2,23 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0d005748-d3b8-4a98-b90c-d719e18715ea" name="Default Changelist" comment="save to db v2">
-      <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/WebCrawler.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/WebCrawler.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/WebCrawler/.idea/WebCrawler.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/WebCrawler/.idea/description.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/WebCrawler/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/WebCrawler/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/WebCrawler/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/WebCrawler/.idea/project-template.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/WebCrawler/.idea/uiDesigner.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/WebCrawler/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/WebCrawler/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/WebCrawler/META-INF/WebCrawler.kotlin_module" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/WebCrawler/com/company/DB/DBManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/WebCrawler/com/company/DB/DBManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/WebCrawler/com/company/Scheduler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/WebCrawler/com/company/Scheduler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/WebCrawler/com/company/WebCrawler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/WebCrawler/com/company/WebCrawler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/DB/DBManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/DB/DBManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/DB/Page.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/DB/Page.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/company/WebCrawler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/WebCrawler.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -27,15 +43,14 @@
     <select />
   </component>
   <component name="DefaultGradleProjectSettings">
-    <option name="testRunner" value="GRADLE" />
-    <option name="delegatedBuild" value="true" />
+    <option name="isMigrated" value="true" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/company/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
+            <state relative-caret-position="68">
               <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -44,30 +59,20 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/company/Scheduler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="650">
-              <caret line="39" column="26" selection-start-line="39" selection-start-column="26" selection-end-line="39" selection-end-column="26" />
-              <folding>
-                <element signature="e#907#908#0" expanded="true" />
-                <element signature="e#935#936#0" expanded="true" />
-                <element signature="e#1135#1136#0" expanded="true" />
-                <element signature="e#1163#1164#0" expanded="true" />
-                <element signature="e#990#991#0" expanded="true" />
-                <element signature="e#1022#1023#0" expanded="true" />
-                <element signature="e#1178#1179#0" expanded="true" />
-                <element signature="e#1209#1210#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="578">
+              <caret line="34" column="14" selection-start-line="34" selection-start-column="14" selection-end-line="34" selection-end-column="14" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/company/WebCrawler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-683">
-              <caret line="50" selection-start-line="50" selection-end-line="50" />
+            <state relative-caret-position="415">
+              <caret line="247" column="41" selection-start-line="247" selection-start-column="41" selection-end-line="247" selection-end-column="41" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -87,8 +92,14 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/company/DB/Page.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="15" selection-start-line="15" selection-end-line="15" />
+            <state relative-caret-position="358">
+              <caret line="90" column="24" selection-start-line="90" selection-start-column="24" selection-end-line="90" selection-end-column="24" />
+              <folding>
+                <element signature="e#1872#1873#0" expanded="true" />
+                <element signature="e#1891#1892#0" expanded="true" />
+                <element signature="e#1948#1949#0" expanded="true" />
+                <element signature="e#1969#1970#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -114,8 +125,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/company/DB/DBManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="78" column="16" selection-start-line="78" selection-start-column="16" selection-end-line="78" selection-end-column="16" />
+            <state relative-caret-position="-569">
+              <caret line="46" column="44" selection-start-line="46" selection-start-column="44" selection-end-line="46" selection-end-column="44" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -157,6 +168,8 @@
       <find>crawldb.link</find>
       <find>page url</find>
       <find>prent</find>
+      <find>Main.db.savePage</find>
+      <find>current page:</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -175,11 +188,11 @@
         <option value="$PROJECT_DIR$/src/com/company/DBManager.java" />
         <option value="$PROJECT_DIR$/src/com/company/DB/PageType.java" />
         <option value="$PROJECT_DIR$/src/com/company/DB/Image.java" />
-        <option value="$PROJECT_DIR$/src/com/company/DB/Page.java" />
         <option value="$PROJECT_DIR$/src/com/company/Robots.java" />
         <option value="$PROJECT_DIR$/src/com/company/Main.java" />
-        <option value="$PROJECT_DIR$/src/com/company/DB/DBManager.java" />
         <option value="$PROJECT_DIR$/src/com/company/Scheduler.java" />
+        <option value="$PROJECT_DIR$/src/com/company/DB/Page.java" />
+        <option value="$PROJECT_DIR$/src/com/company/DB/DBManager.java" />
         <option value="$PROJECT_DIR$/src/com/company/WebCrawler.java" />
       </list>
     </option>
@@ -201,8 +214,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -240,6 +253,9 @@
     <property name="aspect.path.notification.shown" value="true" />
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1553633663363" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../Magisterij/1. letnik/IEPS/web-crawler-ieps" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
@@ -284,8 +300,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Robots" />
         <item itemvalue="Application.Main" />
+        <item itemvalue="Application.Robots" />
       </list>
     </recent_temporary>
   </component>
@@ -311,7 +327,9 @@
       <workItem from="1553248774437" duration="1972000" />
       <workItem from="1553277942047" duration="35726000" />
       <workItem from="1553546701925" duration="240000" />
-      <workItem from="1553778917574" duration="4814000" />
+      <workItem from="1553778917574" duration="5236000" />
+      <workItem from="1553787626403" duration="2374000" />
+      <workItem from="1553795888422" duration="2578000" />
     </task>
     <task id="LOCAL-00001" summary="Save page data, save link added.">
       <created>1552776925094</created>
@@ -327,11 +345,18 @@
       <option name="project" value="LOCAL" />
       <updated>1552777255826</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="canonical urls, page content duplicate detection, cleaned html page.">
+      <created>1553789089788</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1553789089788</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="78567000" />
+    <option name="totallyTimeSpent" value="83941000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -346,7 +371,7 @@
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2657718" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2738255" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -355,7 +380,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.55122733" weight="0.37677053" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.55122733" visible="true" weight="0.37677053" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.4994664" weight="0.39932886" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -365,7 +390,7 @@
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Terminal" order="10" />
       <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.44877267" side_tool="true" weight="0.72371364" />
-      <window_info anchor="bottom" id="Messages" order="12" sideWeight="0.49519745" weight="0.32885906" />
+      <window_info anchor="bottom" id="Messages" order="12" sideWeight="0.49519745" weight="0.3286119" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.2497332" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -383,7 +408,68 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Save page data, save link added." />
     <MESSAGE value="save to db v2" />
-    <option name="LAST_COMMIT_MESSAGE" value="save to db v2" />
+    <MESSAGE value="canonical urls, page content duplicate detection, cleaned html page." />
+    <option name="LAST_COMMIT_MESSAGE" value="canonical urls, page content duplicate detection, cleaned html page." />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/com/company/WebCrawler.java</url>
+          <line>47</line>
+          <properties />
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/com/company/WebCrawler.java</url>
+          <line>50</line>
+          <properties />
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/com/company/WebCrawler.java</url>
+          <line>53</line>
+          <properties />
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/com/company/WebCrawler.java</url>
+          <line>66</line>
+          <properties />
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/com/company/WebCrawler.java</url>
+          <line>74</line>
+          <properties />
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/com/company/WebCrawler.java</url>
+          <line>79</line>
+          <properties />
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/com/company/WebCrawler.java</url>
+          <line>85</line>
+          <properties />
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/com/company/WebCrawler.java</url>
+          <line>96</line>
+          <properties />
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/com/company/WebCrawler.java</url>
+          <line>262</line>
+          <properties />
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="antWorkspaceConfiguration">
     <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
@@ -408,17 +494,27 @@
     <entry file="file://$PROJECT_DIR$/lala" />
     <entry file="file://$PROJECT_DIR$/src/Robots.java" />
     <entry file="file://$PROJECT_DIR$/src/com/company/Robots.java" />
+    <entry file="file://$PROJECT_DIR$/src/com/company/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/company/Scheduler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="578">
+          <caret line="34" column="14" selection-start-line="34" selection-start-column="14" selection-end-line="34" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/DB/Site.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
           <caret line="4" column="19" selection-start-line="4" selection-start-column="19" selection-end-line="4" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/company/DB/Page.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="15" selection-start-line="15" selection-end-line="15" />
         </state>
       </provider>
     </entry>
@@ -443,20 +539,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/company/Main.java">
+    <entry file="file://$PROJECT_DIR$/src/com/company/DB/Page.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
+        <state relative-caret-position="358">
+          <caret line="90" column="24" selection-start-line="90" selection-start-column="24" selection-end-line="90" selection-end-column="24" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="e#1872#1873#0" expanded="true" />
+            <element signature="e#1891#1892#0" expanded="true" />
+            <element signature="e#1948#1949#0" expanded="true" />
+            <element signature="e#1969#1970#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/DB/DBManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="78" column="16" selection-start-line="78" selection-start-column="16" selection-end-line="78" selection-end-column="16" />
+        <state relative-caret-position="-569">
+          <caret line="46" column="44" selection-start-line="46" selection-start-column="44" selection-end-line="46" selection-end-column="44" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -465,27 +564,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/WebCrawler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-683">
-          <caret line="50" selection-start-line="50" selection-end-line="50" />
+        <state relative-caret-position="415">
+          <caret line="247" column="41" selection-start-line="247" selection-start-column="41" selection-end-line="247" selection-end-column="41" />
           <folding>
             <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/company/Scheduler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="650">
-          <caret line="39" column="26" selection-start-line="39" selection-start-column="26" selection-end-line="39" selection-end-column="26" />
-          <folding>
-            <element signature="e#907#908#0" expanded="true" />
-            <element signature="e#935#936#0" expanded="true" />
-            <element signature="e#1135#1136#0" expanded="true" />
-            <element signature="e#1163#1164#0" expanded="true" />
-            <element signature="e#990#991#0" expanded="true" />
-            <element signature="e#1022#1023#0" expanded="true" />
-            <element signature="e#1178#1179#0" expanded="true" />
-            <element signature="e#1209#1210#0" expanded="true" />
           </folding>
         </state>
       </provider>

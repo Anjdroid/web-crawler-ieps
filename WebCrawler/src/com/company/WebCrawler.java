@@ -64,7 +64,8 @@ public class WebCrawler implements Runnable {
             int pageId = -1;
 
             // get cannonical URL of page
-            pageToCrawl = getCanonicalURL(pageToCrawl);
+            pageToCrawl = getCanonicalURL(protocol+pageToCrawl);
+            LOGGER.info("canonical url: "+pageToCrawl);
 
             // first check if page is a duplicate in frontier / visited
             if (Scheduler.isDuplicate(pageToCrawl)) {
@@ -78,6 +79,8 @@ public class WebCrawler implements Runnable {
                 // get domain
                 String domain = getDomain(pageToCrawl);
                 LOGGER.info("domain " + domain);
+
+                boolean robotsExsist = false;
 
                 // get side id from db if it exsists
                 int siteId = Main.db.getSiteFromDomain(domain);
@@ -96,12 +99,12 @@ public class WebCrawler implements Runnable {
                         BufferedReader in = new BufferedReader(new InputStreamReader(robotsUrlCon.getInputStream()));
                         String line;
 
-                        Boolean ourUserAgent = false; // Gledamo le za User-Agent: *
+                        boolean ourUserAgent = false; // Gledamo le za User-Agent: *
 
                         ArrayList<String> allowL = new ArrayList<>();
                         ArrayList<String> disallowL = new ArrayList<>();
                         ArrayList<String> sitemapL = new ArrayList<>();
-                        Integer crawlDel = 4; //
+                        int crawlDel = 4; //
 
                         while ((line = in.readLine()) != null) {
                             robotsTxt.append(line);
@@ -127,8 +130,8 @@ public class WebCrawler implements Runnable {
                             }
                         }
 
-                        String stran = pageToCrawl.replace(protocol, "");
-                        stran = stran.replace("www.", "");
+                        //String stran = pageToCrawl.replace(protocol, "");
+                        //stran = stran.replace("www.", "");
 
                         /*Main.scheduler.getAllowed().put(stran, allowL);
                         disallow.put(stran, disallowL);
@@ -164,9 +167,12 @@ public class WebCrawler implements Runnable {
                                 }
                             }
                         }
+                        robotsExsist = true;
                     } catch (Exception e) {
-                        LOGGER.info("ERROR getting sitemap/robots");
+                        LOGGER.info("ERROR getting sitemap/robots for domain "+domain);
                         e.printStackTrace();
+                        // robots file doesnt exsist
+                        robotsExsist = false;
 
                         /*
                         // Vstavimo v bazo (tukaj siteId DA ali NE?)
@@ -182,28 +188,32 @@ public class WebCrawler implements Runnable {
 
                 // pogledamo ce lahko page crawlamo
 
-                Boolean allowCrawl = true;
+                boolean allowCrawl = true;
 
+                if (robotsExsist) {
 
-                HashMap<String, ArrayList<String>> checkDisallowed = Main.scheduler.getDissallowed();
-                if (checkDisallowed.containsKey(domain)) {
-                    // dobimo seznam disallowed pages
-                    ArrayList<String> disallowedPages = checkDisallowed.get(domain);
-                    if (disallowedPages.contains(pageToCrawl)) {
-                        // ce ta seznam vsebuje nas page
-                        allowCrawl = false;
+                    HashMap<String, ArrayList<String>> checkDisallowed = Main.scheduler.getDissallowed();
+                    if (checkDisallowed.containsKey(domain)) {
+                        // dobimo seznam disallowed pages
+                        ArrayList<String> disallowedPages = checkDisallowed.get(domain);
+                        if (disallowedPages.contains(pageToCrawl)) {
+                            // ce ta seznam vsebuje nas page
+                            allowCrawl = false;
+                        }
                     }
                 }
 
                 if (allowCrawl) {
                     // dobimo crawl delay za domeno
-                    Integer spi = Main.scheduler.getCrawlDelay().get(domain);
-                    spi = spi * 1000;
+                    if (robotsExsist && !Main.scheduler.getCrawlDelay().isEmpty()) {
+                        int spi = Main.scheduler.getCrawlDelay().get(domain);
+                        spi = spi * 1000;
 
-                    try {
-                        Thread.sleep(spi);
-                    } catch (Exception e) {
-                        System.out.println("ERROR: " + e.getMessage());
+                        try {
+                            Thread.sleep(spi);
+                        } catch (Exception e) {
+                            System.out.println("ERROR: " + e.getMessage());
+                        }
                     }
 
                     try {
@@ -233,7 +243,7 @@ public class WebCrawler implements Runnable {
                             // get site id and save site to db
                             siteId = getSiteId(domain, sitemaps.toString(), robotsTxt.toString());
                             // save document
-                            pageId = Main.db.savePage(new Page(siteId, "BINARY", pageToCrawl, null, statusCode, timestamp));
+                            pageId = Main.db.savePage(new Page(siteId, "BINARY", pageToCrawl, null, statusCode, timestamp, 0));
                             byte[] fileData = readImageFromUrl(pageToCrawl, pageToCrawl, true);
                             Main.db.savePageData(new PageData(pageId, getFileExtension(contentType), fileData));
 
@@ -246,7 +256,7 @@ public class WebCrawler implements Runnable {
                             HtmlPage htmlPage = (HtmlPage) page;
                             Document document = Jsoup.parse(htmlPage.asXml());
 
-                            // TODO: clean html -- upgrade whitelist
+                            // get cleaned HTML
                             String cleanDoc = Jsoup.clean(document.html(), Whitelist.relaxed());
                             Document cleaned = Jsoup.parse(cleanDoc);
 
@@ -256,7 +266,7 @@ public class WebCrawler implements Runnable {
                                 saveDuplicate(pageToCrawl);
                             } else {
 
-                                pageId = Main.db.savePage(new Page(siteId, "HTML", pageToCrawl, cleaned.html(), statusCode, timestamp));
+                                pageId = Main.db.savePage(new Page(siteId, "HTML", pageToCrawl, cleaned.html(), statusCode, timestamp, pageContentHash));
 
                                 // fetch images on page
                                 Elements imagesOnPage = document.select("img[src~=(?i)\\.(png|jpe?g|svg|gif)]");
@@ -272,9 +282,11 @@ public class WebCrawler implements Runnable {
                                     String pageUrl = p.attr("abs:href");
 
                                     if (!pageUrl.equals("")) {
-                                        //LOGGER.info("page url: " + pageUrl + " from page " + pageToCrawl);
 
-                                        pageUrl = pageUrl.split("//")[1];
+                                        LOGGER.info("page url: " + pageUrl + " from page " + pageToCrawl);
+                                        if (pageUrl.contains("//")) {
+                                            pageUrl = pageUrl.split("//")[1];
+                                        }
                                         //LOGGER.info("page url: " + pageUrl + " from page " + pageToCrawl);
 
                                         //boolean isDuplicate = Main.scheduler.isDuplicate(pageUrl);
@@ -285,9 +297,9 @@ public class WebCrawler implements Runnable {
                                         Main.scheduler.getParentChild().put(pageUrl, pageToCrawl);
 
                                         //}
+                                        LOGGER.info("links on page: '" + pageUrl + " " + linksOnPage.size());
                                     }
 
-                                    LOGGER.info("links on page: '" + pageUrl + " " + linksOnPage.size());
 
                                 }
                             }
@@ -295,10 +307,11 @@ public class WebCrawler implements Runnable {
 
                             // set link from to page
                             String parentPage = Main.scheduler.getParentChild().get(pageToCrawl);
+                        if (parentPage != null) {
                             LOGGER.info("setting link page url: " + parentPage + " " + Main.db.getPageFromUrl(parentPage).getId() +
                                     " from page " + pageId);
                             Main.db.setLinkToFromPage(new Link(Main.db.getPageFromUrl(parentPage).getId(), pageId));
-
+                        }
 
 
                     } catch (IOException e) {
@@ -351,7 +364,7 @@ public class WebCrawler implements Runnable {
             LOGGER.info("cant get canonical url");
             e.printStackTrace();
         }
-        return canonical;
+        return canonical.split("//")[1];
     }
 
     private String getFileExtension(String contentType) {
@@ -403,7 +416,7 @@ public class WebCrawler implements Runnable {
     private void saveDuplicate(String pageToCrawl) {
         Page duplicatePage = Main.db.getPageFromUrl(pageToCrawl);
         int pageId = Main.db.savePage(new Page(duplicatePage.getSiteId(), "DUPLICATE", pageToCrawl, null,
-                duplicatePage.getHttpStatusCode(), new Timestamp(System.currentTimeMillis())));
+                duplicatePage.getHttpStatusCode(), new Timestamp(System.currentTimeMillis()), duplicatePage.getHashcode()));
         Main.db.setLinkToFromPage(new Link(duplicatePage.getId(), pageId));
     }
 

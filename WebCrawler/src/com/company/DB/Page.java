@@ -11,18 +11,20 @@ public class Page {
     private String htmlContent;
     private int httpStatusCode;
     private Timestamp accessedTime;
+    private int hashcode;
 
     public Page() {
 
     }
 
-    public Page(int siteId, String pageTypeCode, String url, String htmlContent, int httpStatusCode, Timestamp accessedTime) {
+    public Page(int siteId, String pageTypeCode, String url, String htmlContent, int httpStatusCode, Timestamp accessedTime, int hashcode) {
         this.siteId = siteId;
         this.pageTypeCode = pageTypeCode;
         this.url = url;
         this.htmlContent = htmlContent;
         this.httpStatusCode = httpStatusCode;
         this.accessedTime = accessedTime;
+        this.hashcode = hashcode;
     }
 
     public void setAccessedTime(Timestamp accessedTime) {
@@ -79,5 +81,13 @@ public class Page {
 
     public int getId() {
         return id;
+    }
+
+    public void setHashcode(int hashcode) {
+        this.hashcode = hashcode;
+    }
+
+    public int getHashcode() {
+        return hashcode;
     }
 }
