@@ -2,24 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9efc2f6a-934c-4214-8ab5-029eb273833f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/web-crawler-ieps.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/web-crawler-ieps.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebCrawler/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/WebCrawler/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebCrawler/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/WebCrawler/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebCrawler/out/production/WebCrawler/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/WebCrawler/out/production/WebCrawler/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebCrawler/out/production/WebCrawler/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/WebCrawler/out/production/WebCrawler/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebCrawler/out/production/WebCrawler/com/company/DB/DBManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebCrawler/out/production/WebCrawler/com/company/DB/DBManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebCrawler/out/production/WebCrawler/com/company/DB/DataType.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebCrawler/out/production/WebCrawler/com/company/DB/DataType.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebCrawler/out/production/WebCrawler/com/company/DB/Image.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebCrawler/out/production/WebCrawler/com/company/DB/Image.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebCrawler/out/production/WebCrawler/com/company/DB/Link.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebCrawler/out/production/WebCrawler/com/company/DB/Link.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebCrawler/out/production/WebCrawler/com/company/DB/Page.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebCrawler/out/production/WebCrawler/com/company/DB/Page.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebCrawler/out/production/WebCrawler/com/company/DB/PageData.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebCrawler/out/production/WebCrawler/com/company/DB/PageData.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebCrawler/out/production/WebCrawler/com/company/DB/PageType.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebCrawler/out/production/WebCrawler/com/company/DB/PageType.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebCrawler/out/production/WebCrawler/com/company/DB/Site.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebCrawler/out/production/WebCrawler/com/company/DB/Site.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebCrawler/out/production/WebCrawler/com/company/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebCrawler/out/production/WebCrawler/com/company/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebCrawler/out/production/WebCrawler/com/company/Scheduler.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebCrawler/out/production/WebCrawler/com/company/Scheduler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebCrawler/out/production/WebCrawler/com/company/WebCrawler.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebCrawler/out/production/WebCrawler/com/company/WebCrawler.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebCrawler/src/com/company/WebCrawler.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebCrawler/src/com/company/WebCrawler.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -45,8 +28,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/WebCrawler/src/com/company/WebCrawler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="165" column="25" lean-forward="true" selection-start-line="165" selection-start-column="25" selection-end-line="165" selection-end-column="25" />
+            <state relative-caret-position="171">
+              <caret line="145" column="81" lean-forward="true" selection-start-line="145" selection-start-column="81" selection-end-line="145" selection-end-column="81" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -196,7 +179,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1553724396500" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1553767978229" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/lib/robots.io v1.0.2.jar!/" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -248,6 +231,14 @@
       <updated>1552642008618</updated>
       <workItem from="1552642009780" duration="298000" />
     </task>
+    <task id="LOCAL-00001" summary="robots.txt and sitemap">
+      <created>1553763384276</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1553763384276</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -275,13 +266,13 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3286119" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.3286119" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3286119" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="8" weight="0.3286119" />
+      <window_info active="true" anchor="bottom" id="Version Control" order="8" visible="true" weight="0.3286119" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Terminal" order="10" weight="0.3286119" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
@@ -330,6 +321,10 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="robots.txt and sitemap" />
+    <option name="LAST_COMMIT_MESSAGE" value="robots.txt and sitemap" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/WebCrawler/src/com/company/Link.java" />
@@ -451,8 +446,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/WebCrawler/src/com/company/WebCrawler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="165" column="25" lean-forward="true" selection-start-line="165" selection-start-column="25" selection-end-line="165" selection-end-column="25" />
+        <state relative-caret-position="171">
+          <caret line="145" column="81" lean-forward="true" selection-start-line="145" selection-start-column="81" selection-end-line="145" selection-end-column="81" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

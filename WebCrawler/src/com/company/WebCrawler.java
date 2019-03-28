@@ -98,7 +98,7 @@ public class WebCrawler implements Runnable {
                             if (line.contains("Disallow:")) {
                                 disallowL.add(line.replace("Disallow: ", ""));
                             }
-                            if (line.contains("Allow:")) {
+                            if ((line.contains("Allow:")) && (line.replace("Allow: ", "") != "/")) {
                                 allowL.add(line.replace("Allow: ", ""));
                             }
                             if (line.contains("Crawl-delay:")) {
@@ -148,7 +148,7 @@ public class WebCrawler implements Runnable {
                         }
                     }
 
-                    // Vstavimo v bazo (tukaj id DA ali NE?)
+                    // Vstavimo v bazo (tukaj siteId DA ali NE?)
                     PreparedStatement stat = con.prepareStatement("INSERT INTO site (id, domain, robots_content, " +
                             "sitemap_content) VALUES ('" + getSiteId(pageToCrawl) + "', '" + url1HostNoWWW + "', '"
                             + robotsTxt + "', '" + sitemaps + "')");
@@ -158,10 +158,12 @@ public class WebCrawler implements Runnable {
                 System.out.println("ERROR: " + e.getMessage());
             }
 
+            Boolean allowCrawl = true;
             for (String disa : disallow.get(pageToCrawl)) {
                 if (pageToCrawl.contains(disa)) {
                     for (String a : allow.get(pageToCrawl)) {
                         if (!(pageToCrawl.contains(a))) {
+                            allowCrawl = false;
                             // TODO: Strani ne smemo crawlati
                         }
                     }
