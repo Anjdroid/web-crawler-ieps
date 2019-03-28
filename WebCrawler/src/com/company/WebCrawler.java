@@ -5,7 +5,7 @@ import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.UnexpectedPage;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import org.jsoup.Connection;
+//import org.jsoup.Connection; // To sem zakomentiral, ker drugače dobim error, ko import java.sql.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -14,11 +14,14 @@ import org.jsoup.select.Elements;
 
 import java.io.*;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Files;
-import java.sql.Timestamp;
+import java.nio.file.Paths; // Jan
+import java.sql.*;
 import java.util.*;
 import java.util.logging.Logger;
 
+import java.sql.Statement; // Jan
 
 public class WebCrawler implements Runnable {
 
@@ -45,6 +48,134 @@ public class WebCrawler implements Runnable {
 
             // get URL from frontier
             String pageToCrawl = Main.scheduler.getFrontier().poll();
+
+            // -------------------
+            // Jan
+            HashMap<String, ArrayList<String>> allow = new HashMap<>();
+            HashMap<String, ArrayList<String>> disallow = new HashMap<>();
+            HashMap<String, Integer> crawlDelay = new HashMap<>();
+            HashMap<String, ArrayList<String>> sitemap = new HashMap<>();
+
+            try {
+                boolean domainExists;
+                Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/webcrawlerdb", "postgres", "postgres");
+                Statement stmt = con.createStatement();
+                URL url1 = new URL(protocol + pageToCrawl);
+                String url1Host = url1.getHost(); // www.nekipage.com
+                String url1HostNoWWW = url1Host.replace("www.", ""); // nekipage.com
+                String SQL = "SELECT * FROM site WHERE domain='" + url1HostNoWWW + "'";
+                ResultSet rs = stmt.executeQuery(SQL);
+                // Preverimo, če je domena strani, ki jo crawlamo, že v bazi
+                if(rs.next())
+                    domainExists = true;
+                else
+                    domainExists = false;
+
+                // Če še ni v bazi ...
+                if (domainExists == false) {
+                    URL robotsUrl = new URL(protocol + url1Host + "/robots.txt");
+                    URLConnection robotsUrlCon = robotsUrl.openConnection();
+                    BufferedReader in = new BufferedReader(new InputStreamReader(robotsUrlCon.getInputStream()));
+                    StringBuffer robotsTxt = new StringBuffer();
+                    String line;
+
+                    Boolean ourUserAgent = false; // Gledamo le za User-Agent: *
+
+                    ArrayList<String> allowL = new ArrayList<>();
+                    ArrayList<String> disallowL = new ArrayList<>();
+                    ArrayList<String> sitemapL = new ArrayList<>();
+                    Integer crawlDel = 4; //
+
+                    while ((line = in.readLine()) != null) {
+                        robotsTxt.append(line);
+                        if (line == "User-Agent: *") {
+                            ourUserAgent = true;
+                        }
+                        if ((line.contains("User-Agent:")) && (line != "User-Agent: *")) {
+                            ourUserAgent = false;
+                        }
+                        if (ourUserAgent) {
+                            if (line.contains("Disallow:")) {
+                                disallowL.add(line.replace("Disallow: ", ""));
+                            }
+                            if (line.contains("Allow:")) {
+                                allowL.add(line.replace("Allow: ", ""));
+                            }
+                            if (line.contains("Crawl-delay:")) {
+                                crawlDel = Integer.parseInt(line.replace("Crawl-delay: ", ""));
+                            }
+                        }
+                        if (line.contains("Sitemap:")) {
+                            sitemapL.add(line.replace("Sitemap: ", ""));
+                        }
+                    }
+                    /*
+                    String stran = pageToCrawl.replace(protocol, "");
+                    stran = stran.replace("www.", "");
+
+                    allow.put(stran, allowL);
+                    disallow.put(stran, disallowL);
+                    sitemap.put(stran, sitemapL);
+                    crawlDelay.put(stran, crawlDel);
+                    */ // --- ALI ---
+                    allow.put(pageToCrawl, allowL);
+                    disallow.put(pageToCrawl, disallowL);
+                    sitemap.put(pageToCrawl, sitemapL);
+                    crawlDelay.put(pageToCrawl, crawlDel);
+
+                    StringBuilder sitemaps = new StringBuilder();
+
+                    for (String s : sitemapL) { // ker lahko ima ena domana več sitemap-ov
+                        sitemaps.append(s);
+                        sitemaps.append("\n");
+
+                        URL sitemapUrl = new URL(s);
+                        URLConnection sitemapUrlCon = sitemapUrl.openConnection();
+                        BufferedReader inSitemap = new BufferedReader(new InputStreamReader(sitemapUrlCon.getInputStream()));
+                        String line2;
+
+                        while ((line2 = inSitemap.readLine()) != null) {
+                            while (line2.contains("<loc>")) {
+                                int start = line2.indexOf("<loc>");
+                                int end = line2.indexOf("</loc>");
+                                String stran2 = line2.substring(start+5, end);
+                                line2 = line2.replace(line2.substring(start, end+6), "");
+
+                                stran2 = stran2.replace(protocol, "");
+                                stran2 = stran2.replace("www.", "");
+                                Main.scheduler.getFrontier().add(stran2); // Vse strani iz sitemap damo na frontier
+                            }
+                        }
+                    }
+
+                    // Vstavimo v bazo (tukaj id DA ali NE?)
+                    PreparedStatement stat = con.prepareStatement("INSERT INTO site (id, domain, robots_content, " +
+                            "sitemap_content) VALUES ('" + getSiteId(pageToCrawl) + "', '" + url1HostNoWWW + "', '"
+                            + robotsTxt + "', '" + sitemaps + "')");
+                    stat.executeUpdate();
+                }
+            } catch (Exception e) {
+                System.out.println("ERROR: " + e.getMessage());
+            }
+
+            for (String disa : disallow.get(pageToCrawl)) {
+                if (pageToCrawl.contains(disa)) {
+                    for (String a : allow.get(pageToCrawl)) {
+                        if (!(pageToCrawl.contains(a))) {
+                            // TODO: Strani ne smemo crawlati
+                        }
+                    }
+                }
+            }
+
+            Integer spi = crawlDelay.get(pageToCrawl);
+            spi = spi * 1000;
+            try {
+                Thread.sleep(spi);
+            } catch (Exception e) {
+                System.out.println("ERROR: " + e.getMessage());
+            }
+            // -------------------
 
             // add url to visited pages
             Main.scheduler.getVisited().add(pageToCrawl.hashCode());
