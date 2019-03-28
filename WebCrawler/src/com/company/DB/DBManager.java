@@ -76,6 +76,26 @@ public class DBManager {
         return siteId;
     }
 
+    public int getPageFromHash(int hash) {
+        String query = "SELECT id \n" +
+                "       \n" +
+                "  FROM crawldb.page WHERE hashcode =\'"+ hash + "\'";
+
+        int id = -1;
+        try {
+            PreparedStatement pst = Main.conn.prepareStatement(query);
+
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                id = rs.getInt("id");
+            }
+            LOGGER.info("getting page id from hash "+ id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return id;
+    }
+
     public Page getPageFromUrl(String url) {
         String query = "SELECT id, site_id, http_status_code \n" +
                 "       \n" +

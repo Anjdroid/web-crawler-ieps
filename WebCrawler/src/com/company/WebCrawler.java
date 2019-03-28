@@ -13,6 +13,7 @@ import org.jsoup.safety.Whitelist;
 import org.jsoup.select.Elements;
 
 import java.io.*;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
@@ -62,14 +63,15 @@ public class WebCrawler implements Runnable {
 
             int pageId = -1;
 
+            // get cannonical URL of page
+            pageToCrawl = getCanonicalURL(pageToCrawl);
+
             // first check if page is a duplicate in frontier / visited
             if (Scheduler.isDuplicate(pageToCrawl)) {
 
                 LOGGER.info("Page is duplicate '" + pageToCrawl + "");
                 // ne dodamo page-a v frontier ampak shranimo v DB duplikat
-                Page duplicatePage = Main.db.getPageFromUrl(pageToCrawl);
-                pageId = Main.db.savePage(new Page(duplicatePage.getSiteId(), "DUPLICATE", pageToCrawl, null, duplicatePage.getHttpStatusCode(), new Timestamp(System.currentTimeMillis())));
-                Main.db.setLinkToFromPage(new Link(duplicatePage.getId(), pageId));
+                saveDuplicate(pageToCrawl);
 
             } else {
 
@@ -88,7 +90,6 @@ public class WebCrawler implements Runnable {
 
                     HashMap<String, ArrayList<String>> sitemap = new HashMap<>();
 
-                    // TODO CLEAN:
                     try {
                         URL robotsUrl = new URL(protocol + domain + "/robots.txt");
                         URLConnection robotsUrlCon = robotsUrl.openConnection();
@@ -246,50 +247,58 @@ public class WebCrawler implements Runnable {
                             Document document = Jsoup.parse(htmlPage.asXml());
 
                             // TODO: clean html -- upgrade whitelist
-                            String cleanDoc = Jsoup.clean(document.html(), Whitelist.basic());
+                            String cleanDoc = Jsoup.clean(document.html(), Whitelist.relaxed());
                             Document cleaned = Jsoup.parse(cleanDoc);
 
-                            pageId = Main.db.savePage(new Page(siteId, "HTML", pageToCrawl, document.html(), statusCode, timestamp));
+                            int pageContentHash = cleaned.html().hashCode();
+                            // check if hashcode is in database
+                            if (isContentDuplicate(pageContentHash)) {
+                                saveDuplicate(pageToCrawl);
+                            } else {
 
-                            // fetch images on page
-                            Elements imagesOnPage = document.select("img[src~=(?i)\\.(png|jpe?g|svg|gif)]");
+                                pageId = Main.db.savePage(new Page(siteId, "HTML", pageToCrawl, cleaned.html(), statusCode, timestamp));
 
-                            // extract images
-                            findImagesOnPage(imagesOnPage, pageId, false);
+                                // fetch images on page
+                                Elements imagesOnPage = document.select("img[src~=(?i)\\.(png|jpe?g|svg|gif)]");
 
-                            // parse HTML to extract <a /> attrs with links
-                            Elements linksOnPage = document.select("a[href]");
+                                // extract images
+                                findImagesOnPage(imagesOnPage, pageId, false);
 
-                            // more links yay
-                            for (Element p : linksOnPage) {
-                                String pageUrl = p.attr("abs:href");
+                                // parse HTML to extract <a /> attrs with links
+                                Elements linksOnPage = document.select("a[href]");
 
-                                if (!pageUrl.equals("")) {
-                                    //LOGGER.info("page url: " + pageUrl + " from page " + pageToCrawl);
+                                // more links yay
+                                for (Element p : linksOnPage) {
+                                    String pageUrl = p.attr("abs:href");
 
-                                    pageUrl = pageUrl.split("//")[1];
-                                    //LOGGER.info("page url: " + pageUrl + " from page " + pageToCrawl);
+                                    if (!pageUrl.equals("")) {
+                                        //LOGGER.info("page url: " + pageUrl + " from page " + pageToCrawl);
 
-                                    //boolean isDuplicate = Main.scheduler.isDuplicate(pageUrl);
+                                        pageUrl = pageUrl.split("//")[1];
+                                        //LOGGER.info("page url: " + pageUrl + " from page " + pageToCrawl);
 
-                                    // else {
-                                    // add page to frontier
-                                    Main.scheduler.getFrontier().add(pageUrl);
-                                    Main.scheduler.getParentChild().put(pageToCrawl, pageUrl);
+                                        //boolean isDuplicate = Main.scheduler.isDuplicate(pageUrl);
 
-                                    //}
+                                        // else {
+                                        // add page to frontier
+                                        Main.scheduler.getFrontier().add(pageUrl);
+                                        Main.scheduler.getParentChild().put(pageUrl, pageToCrawl);
+
+                                        //}
+                                    }
+
+                                    LOGGER.info("links on page: '" + pageUrl + " " + linksOnPage.size());
+
                                 }
-
-                                LOGGER.info("links on page: '" + pageUrl + " " + linksOnPage.size());
-
                             }
                         }
 
-                        // set link from to page
-                        String parentPage = Main.scheduler.getParentChild().get(pageToCrawl);
-                        LOGGER.info("setting link page url: " + parentPage + " " + Main.db.getPageFromUrl(parentPage).getId() +
-                                " from page " + pageId);
-                        Main.db.setLinkToFromPage(new Link(Main.db.getPageFromUrl(parentPage).getId(), pageId));
+                            // set link from to page
+                            String parentPage = Main.scheduler.getParentChild().get(pageToCrawl);
+                            LOGGER.info("setting link page url: " + parentPage + " " + Main.db.getPageFromUrl(parentPage).getId() +
+                                    " from page " + pageId);
+                            Main.db.setLinkToFromPage(new Link(Main.db.getPageFromUrl(parentPage).getId(), pageId));
+
 
 
                     } catch (IOException e) {
@@ -326,9 +335,23 @@ public class WebCrawler implements Runnable {
 
     }
 
-    private String getCanonicalURL(String url) {
-        // TODO
-        return "";
+    private boolean isContentDuplicate(int hashcode) {
+        int id = Main.db.getPageFromHash(hashcode);
+        return id > 0;
+    }
+
+    private String getCanonicalURL(String myUrl) {
+        String canonical = myUrl;
+        try {
+            URL url = new URL(myUrl);
+            URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(),
+                    url.getPath(), url.getQuery(), url.getRef());
+            canonical = uri.toString();
+        } catch (Exception e) {
+            LOGGER.info("cant get canonical url");
+            e.printStackTrace();
+        }
+        return canonical;
     }
 
     private String getFileExtension(String contentType) {
@@ -375,6 +398,13 @@ public class WebCrawler implements Runnable {
             ex.printStackTrace();
         }
         return mimeType;
+    }
+
+    private void saveDuplicate(String pageToCrawl) {
+        Page duplicatePage = Main.db.getPageFromUrl(pageToCrawl);
+        int pageId = Main.db.savePage(new Page(duplicatePage.getSiteId(), "DUPLICATE", pageToCrawl, null,
+                duplicatePage.getHttpStatusCode(), new Timestamp(System.currentTimeMillis())));
+        Main.db.setLinkToFromPage(new Link(duplicatePage.getId(), pageId));
     }
 
     private byte[] readImageFromUrl(String imageUrl, String filename, boolean isDoc) {
