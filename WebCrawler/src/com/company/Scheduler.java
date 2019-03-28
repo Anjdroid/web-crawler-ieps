@@ -1,10 +1,7 @@
 package com.company;
 
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 
 public class Scheduler {
 
@@ -13,6 +10,13 @@ public class Scheduler {
 
     //URLs already visited
     private static Set<Integer> visited;
+
+    HashMap<String, ArrayList<String>> allow = new HashMap<>();
+    HashMap<String, ArrayList<String>> disallow = new HashMap<>();
+    HashMap<String, Integer> crawlDelay = new HashMap<>();
+    HashMap<String, String> parentChild = new HashMap<>();
+    //HashMap<String, ArrayList<String>> sitemap = new HashMap<>();
+
 
     public Scheduler() {
         frontier = new LinkedList<>();
@@ -28,6 +32,22 @@ public class Scheduler {
         frontier.add("mzi.gov.si");
     }
 
+    public  HashMap<String, ArrayList<String>>  getAllowed() {
+        return allow;
+    }
+
+    public  HashMap<String, String>  getParentChild() {
+        return parentChild;
+    }
+
+    public  HashMap<String, ArrayList<String>>  getDissallowed() {
+        return disallow;
+    }
+
+    public  HashMap<String,Integer>  getCrawlDelay() {
+        return crawlDelay;
+    }
+
     public Queue<String> getFrontier() {
         return frontier;
     }
@@ -38,10 +58,7 @@ public class Scheduler {
 
     public static boolean isDuplicate(String page) {
         // check if URL in visited pages or in frontier
-        if (!visited.contains(page.hashCode()) && !frontier.contains(page)) {
-            return false;
-        }
-        return true;
+        return !visited.contains(page.hashCode()) && !frontier.contains(page);
     }
 
 }

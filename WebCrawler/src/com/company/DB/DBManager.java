@@ -77,9 +77,9 @@ public class DBManager {
     }
 
     public Page getPageFromUrl(String url) {
-        String query = "SELECT id, site_id, http_status_code, \n" +
+        String query = "SELECT id, site_id, http_status_code \n" +
                 "       \n" +
-                "  FROM crawldb.pageurl WHERE url =\'"+ url + "\'";
+                "  FROM crawldb.page WHERE url =\'"+ url + "\'";
 
         Page p = new Page();
         try {
