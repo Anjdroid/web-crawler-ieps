@@ -9,7 +9,7 @@ public class Scheduler {
     private static Queue<String> frontier;
 
     //URLs already visited
-    private static Set<Integer> visited;
+    private static Set<String> visited;
 
     HashMap<String, ArrayList<String>> allow = new HashMap<>();
     HashMap<String, ArrayList<String>> disallow = new HashMap<>();
@@ -52,13 +52,13 @@ public class Scheduler {
         return frontier;
     }
 
-    public Set<Integer> getVisited() {
+    public Set<String> getVisited() {
         return visited;
     }
 
     public static boolean isDuplicate(String page) {
-        // check if URL in visited pages or in frontier
-        return !visited.contains(page.hashCode()) && !frontier.contains(page);
+        // check if URL is in visited pages
+        return !visited.contains(page);
     }
 
 }

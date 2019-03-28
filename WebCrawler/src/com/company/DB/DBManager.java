@@ -33,7 +33,7 @@ public class DBManager {
 
     public int savePage(Page page) {
         int pageId = 0;
-        String query = "INSERT INTO crawldb.page(site_id, page_type_code, url, html_content, http_status_code, accessed_time) VALUES(?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO crawldb.page(site_id, page_type_code, url, html_content, http_status_code, accessed_time, hashcode) VALUES(?, ?, ?, ?, ?, ?, ?)";
 
         try {
             PreparedStatement pst = Main.conn.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
@@ -78,23 +78,26 @@ public class DBManager {
         return siteId;
     }
 
-    public int getPageFromHash(int hash) {
-        String query = "SELECT id FROM crawldb.page WHERE hashcode = ?";
+    public Page getPageFromHash(int hash) {
+        String query = "SELECT id, site_id, http_status_code, hashcode FROM crawldb.page WHERE hashcode = ?";
 
-        int id = -1;
+        Page p = new Page();
         try {
             PreparedStatement pst = Main.conn.prepareStatement(query);
             pst.setInt(1, hash);
 
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
-                id = rs.getInt("id");
+                p.setId(rs.getInt("id"));
+                p.setSiteId(rs.getInt("site_id"));
+                p.setHttpStatusCode(rs.getInt("http_status_code"));
+                p.setHashcode(rs.getInt("hashcode"));
             }
-            LOGGER.info("getting page id from hash "+ id);
+            LOGGER.info("getting page id from hash "+ p.getId());
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return id;
+        return p;
     }
 
     public Page getPageFromUrl(String url) {
@@ -112,7 +115,7 @@ public class DBManager {
                 p.setHttpStatusCode(rs.getInt("http_status_code"));
                 p.setHashcode(rs.getInt("hashcode"));
             }
-            LOGGER.info("getting page id from url "+ p.getHttpStatusCode());
+            LOGGER.info("getting page id from url "+ p.getId());
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -14,6 +14,7 @@ import org.jsoup.select.Elements;
 
 import java.io.*;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
@@ -51,7 +52,7 @@ public class WebCrawler implements Runnable {
             String pageToCrawl = Main.scheduler.getFrontier().poll();
 
             // add url to visited pages
-            Main.scheduler.getVisited().add(pageToCrawl.hashCode());
+            Main.scheduler.getVisited().add(pageToCrawl);
 
             // stop when 100 pages visited -- for now
             if (Main.scheduler.getVisited().size() > 100) {
@@ -59,7 +60,7 @@ public class WebCrawler implements Runnable {
                 return;
             }
 
-            LOGGER.info("Current page: " + pageToCrawl);
+            LOGGER.info("Current page: " + pageToCrawl+ " "+ Thread.currentThread().getId() );
 
             int pageId = -1;
 
@@ -72,12 +73,13 @@ public class WebCrawler implements Runnable {
 
                 LOGGER.info("Page is duplicate '" + pageToCrawl + "");
                 // ne dodamo page-a v frontier ampak shranimo v DB duplikat
-                saveDuplicate(pageToCrawl);
+                Page duplicate = Main.db.getPageFromUrl(pageToCrawl);
+                saveDuplicate(pageToCrawl, duplicate);
 
             } else {
 
                 // get domain
-                String domain = getDomain(pageToCrawl);
+                String domain = getDomainName(protocol+pageToCrawl);
                 LOGGER.info("domain " + domain);
 
                 boolean robotsExsist = false;
@@ -161,8 +163,9 @@ public class WebCrawler implements Runnable {
                                     String stran2 = line2.substring(start + 5, end);
                                     line2 = line2.replace(line2.substring(start, end + 6), "");
 
-                                    stran2 = stran2.replace(protocol, "");
-                                    stran2 = stran2.replace("www.", "");
+                                    stran2 = stran2.contains(protocol) ? stran2.replace(protocol, "") : stran2;
+                                    stran2 = stran2.contains("https://") ? stran2.replace("https://", "") : stran2;
+                                    stran2 = stran2.contains("www.") ? stran2.replace("www.", "") : stran2;
                                     Main.scheduler.getFrontier().add(stran2); // Vse strani iz sitemap damo na frontier
                                 }
                             }
@@ -262,12 +265,13 @@ public class WebCrawler implements Runnable {
 
                             int pageContentHash = cleaned.html().hashCode();
                             // check if hashcode is in database
-                            if (isContentDuplicate(pageContentHash)) {
-                                saveDuplicate(pageToCrawl);
+                            Page pageDuplicate = isContentDuplicate(pageContentHash);
+                            if (pageDuplicate.getId() > 0) {
+                                saveDuplicate(pageToCrawl, pageDuplicate);
                             } else {
 
                                 pageId = Main.db.savePage(new Page(siteId, "HTML", pageToCrawl, cleaned.html(), statusCode, timestamp, pageContentHash));
-
+                                LOGGER.info("page id when saving page to db "+pageId);
                                 // fetch images on page
                                 Elements imagesOnPage = document.select("img[src~=(?i)\\.(png|jpe?g|svg|gif)]");
 
@@ -343,14 +347,20 @@ public class WebCrawler implements Runnable {
         }
     }
 
-    private String getDomain(String url) {
-        return url.replace("www.", "");
-
+    public static String getDomainName(String url) {
+        String domain = url;
+        try {
+            URI uri = new URI(url);
+            domain = uri.getHost();
+        } catch (URISyntaxException ex) {
+            ex.printStackTrace();
+        }
+        return domain.startsWith("www.") ? domain.substring(4) : domain;
     }
 
-    private boolean isContentDuplicate(int hashcode) {
-        int id = Main.db.getPageFromHash(hashcode);
-        return id > 0;
+    private Page isContentDuplicate(int hashcode) {
+        Page page = Main.db.getPageFromHash(hashcode);
+        return page;
     }
 
     private String getCanonicalURL(String myUrl) {
@@ -413,10 +423,10 @@ public class WebCrawler implements Runnable {
         return mimeType;
     }
 
-    private void saveDuplicate(String pageToCrawl) {
-        Page duplicatePage = Main.db.getPageFromUrl(pageToCrawl);
+    private void saveDuplicate(String pageToCrawl, Page duplicatePage) {
         int pageId = Main.db.savePage(new Page(duplicatePage.getSiteId(), "DUPLICATE", pageToCrawl, null,
                 duplicatePage.getHttpStatusCode(), new Timestamp(System.currentTimeMillis()), duplicatePage.getHashcode()));
+
         Main.db.setLinkToFromPage(new Link(duplicatePage.getId(), pageId));
     }
 

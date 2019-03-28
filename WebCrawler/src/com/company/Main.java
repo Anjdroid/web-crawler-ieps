@@ -21,7 +21,7 @@ public class Main {
 
         scheduler = new Scheduler();
 
-        startThreads(1);
+        startThreads(5);
 
     }
 
