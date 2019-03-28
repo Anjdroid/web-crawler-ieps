@@ -123,11 +123,12 @@ public class WebCrawler implements Runnable {
                     sitemap.put(pageToCrawl, sitemapL);
                     crawlDelay.put(pageToCrawl, crawlDel);
 
-                    StringBuilder sitemaps = new StringBuilder();
+                    // StringBuilder sitemaps = new StringBuilder();
+                    StringBuffer sitemaps = new StringBuffer();
 
                     for (String s : sitemapL) { // ker lahko ima ena domana več sitemap-ov
-                        sitemaps.append(s);
-                        sitemaps.append("\n");
+                        // sitemaps.append(s);
+                        // sitemaps.append("\n");
 
                         URL sitemapUrl = new URL(s);
                         URLConnection sitemapUrlCon = sitemapUrl.openConnection();
@@ -135,6 +136,7 @@ public class WebCrawler implements Runnable {
                         String line2;
 
                         while ((line2 = inSitemap.readLine()) != null) {
+                            sitemaps.append(line2);
                             while (line2.contains("<loc>")) {
                                 int start = line2.indexOf("<loc>");
                                 int end = line2.indexOf("</loc>");
