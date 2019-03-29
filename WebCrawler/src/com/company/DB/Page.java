@@ -13,9 +13,7 @@ public class Page {
     private Timestamp accessedTime;
     private int hashcode;
 
-    public Page() {
-
-    }
+    public Page() { }
 
     public Page(int siteId, String pageTypeCode, String url, String htmlContent, int httpStatusCode, Timestamp accessedTime, int hashcode) {
         this.siteId = siteId;

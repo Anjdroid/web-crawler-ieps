@@ -27,7 +27,6 @@ public class DBManager {
             LOGGER.info("Error connecting to db.");
             e.printStackTrace();
         }
-
         return conn;
     }
 
@@ -52,8 +51,6 @@ public class DBManager {
             if (rs.next()) {
                 pageId = rs.getInt(1);
             }
-            LOGGER.info("PAGE ID after inserted: "+pageId);
-
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -71,7 +68,6 @@ public class DBManager {
             if (rs.next()) {
                 siteId = rs.getInt("id");
             }
-            LOGGER.info("site id from domain "+ siteId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -115,7 +111,6 @@ public class DBManager {
                 p.setHttpStatusCode(rs.getInt("http_status_code"));
                 p.setHashcode(rs.getInt("hashcode"));
             }
-            LOGGER.info("getting page id from url "+ p.getId());
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -140,8 +135,6 @@ public class DBManager {
             if (rs.next()) {
                 siteId = rs.getInt(1);
             }
-            LOGGER.info("SITE ID after inserted: "+siteId);
-
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -160,9 +153,6 @@ public class DBManager {
             pst.setBytes(4, image.getData());
             pst.setTimestamp(5, image.getAccessedTime());
             pst.executeUpdate();
-
-            LOGGER.info("image inserted ");
-
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

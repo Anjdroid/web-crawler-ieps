@@ -8,17 +8,19 @@ public class Scheduler {
     // frontier
     private static Queue<String> frontier;
 
-    //URLs already visited
+    // URLs already visited
     private static Set<String> visited;
 
-    HashMap<String, ArrayList<String>> allow = new HashMap<>();
-    HashMap<String, ArrayList<String>> disallow = new HashMap<>();
-    HashMap<String, Integer> crawlDelay = new HashMap<>();
-    HashMap<String, String> parentChild = new HashMap<>();
-    //HashMap<String, ArrayList<String>> sitemap = new HashMap<>();
+    // allowed, disallowed pages from robots.txt & crawl delay for pages
+    private static HashMap<String, ArrayList<String>> allow = new HashMap<>();
+    private static HashMap<String, ArrayList<String>> disallow = new HashMap<>();
+    private static HashMap<String, Integer> crawlDelay = new HashMap<>();
 
+    // parent child relationship for pages
+    private static HashMap<String, String> parentChild = new HashMap<>();
 
     public Scheduler() {
+        // initialize frontier and visited pages
         frontier = new LinkedList<>();
         visited = new HashSet<>();
         frontier.add("podatki.gov.si");
@@ -57,7 +59,7 @@ public class Scheduler {
     }
 
     public static boolean isDuplicate(String page) {
-        // check if URL is in visited pages
+        // check if URL is already in visited pages
         return !visited.contains(page);
     }
 

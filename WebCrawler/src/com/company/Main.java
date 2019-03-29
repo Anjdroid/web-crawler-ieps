@@ -13,20 +13,25 @@ public class Main {
     public static DBManager db;
     public static Connection conn;
     public static Scheduler scheduler;
+    private static int numberOfThreads = 5;
 
     public static void main(String[] args) {
 
+        // connect to database
         db = new DBManager(url + dbName, user, password);
         conn = db.connect();
 
+        // initialize scheduler
         scheduler = new Scheduler();
 
-        startThreads(5);
+        // start crawler with multiple threads
+        startThreads(numberOfThreads);
 
     }
 
     public static void startThreads(int numberOfThreads) {
 
+        // start threads
         for (int i = 0; i < numberOfThreads; i++) {
             Thread object = new Thread(new WebCrawler());
             object.start();
