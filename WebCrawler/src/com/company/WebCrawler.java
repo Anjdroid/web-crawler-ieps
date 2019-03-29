@@ -47,8 +47,8 @@ public class WebCrawler implements Runnable {
             Main.scheduler.getVisited().add(pageToCrawl);
 
             // stop when 100 pages visited -- for now
-            if (Main.scheduler.getVisited().size() > 100) {
-                LOGGER.info("100 pages visited");
+            if (Main.scheduler.getVisited().size() > 10000) {
+                LOGGER.info("10000 pages visited");
                 return;
             }
 
@@ -216,7 +216,7 @@ public class WebCrawler implements Runnable {
 
                         if (docs.contains(contentType)) {
                             // page is a document
-                            LOGGER.info("is doc");
+                            LOGGER.info("is document");
 
                             // get site id and save site to db
                             siteId = getSiteId(domain, sitemaps.toString(), robotsTxt.toString());
@@ -281,8 +281,9 @@ public class WebCrawler implements Runnable {
                         String parentPage = Main.scheduler.getParentChild().get(pageToCrawl);
                         if (parentPage != null) {
                             LOGGER.info("setting link page url: " + parentPage + " " + Main.db.getPageFromUrl(parentPage).getId() +
-                                    " from page: " + pageId + " " + pageToCrawl);
-                            Main.db.setLinkToFromPage(new Link(Main.db.getPageFromUrl(parentPage).getId(), pageId));
+                                    " to page: " + pageId + " " + pageToCrawl);
+                            Main.db.setLinkToFromPage(new Link(Main.db.getPageFromUrl(parentPage).getId(),
+                                    Main.db.getPageFromUrl(pageToCrawl).getId()));
                         }
                     } catch (IOException e) {
                         LOGGER.info("Error for: " + pageToCrawl);
@@ -415,7 +416,7 @@ public class WebCrawler implements Runnable {
             input.close();
             response = output.toByteArray();
         } catch (IOException ex) {
-            LOGGER.info("ERROR while trying to get image data");
+            LOGGER.info("ERROR while trying to get data");
             ex.printStackTrace();
         }
         return response;
