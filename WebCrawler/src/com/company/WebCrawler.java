@@ -174,13 +174,13 @@ public class WebCrawler implements Runnable {
                         outerloop:
                         for (String disa : disallowedPages) {
                             String disaH = disa;
-                            if (disaH.substring(disaH.length() - 1) == "*") {
+                            if ((disaH.substring(disaH.length() - 1)).contains("*")) {
                                 disaH = disaH.substring(0, disaH.length()-1);
                             }
-                            if (disaH.substring(0,1) == "*") {
+                            if ((disaH.substring(0,1)).contains("*")) {
                                 disaH = disaH.substring(1);
                             }
-                            else if (disaH.substring(0,2) == "/*") {
+                            else if ((disaH.substring(0,2)).contains("/*")) {
                                 disaH = disaH.substring(2);
                             }
                             if (pageToCrawl.contains(disaH)) {
@@ -191,13 +191,13 @@ public class WebCrawler implements Runnable {
                                     ArrayList<String> allowedPages = checkAllowed.get(domain);
                                     for (String a : allowedPages) {
                                         String aH = a;
-                                        if (aH.substring(aH.length() - 1) == "*") {
-                                            aH = disaH.substring(0, aH.length()-1);
+                                        if ((aH.substring(aH.length() - 1)).contains("*")) {
+                                            aH = aH.substring(0, aH.length()-1);
                                         }
-                                        if (aH.substring(0,1) == "*") {
+                                        if ((aH.substring(0,1)).contains("*")) {
                                             aH = aH.substring(1);
                                         }
-                                        else if (aH.substring(0,2) == "/*") {
+                                        else if ((aH.substring(0,2)).contains("/*")) {
                                             aH = aH.substring(2);
                                         }
                                         if (pageToCrawl.contains(aH)) {
