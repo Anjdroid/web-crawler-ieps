@@ -37,8 +37,8 @@ TODO:
 * URL frontier: A list of URLs waiting to be parsed.
 	* breadth-first strategy
 	** REPORT: explain implementation of strategy
-	* robots.txt (user-agent, allow, disallow, crawl-delay)
-	* sitemap -> if it exsits, add all urls to frontier
+	* robots.txt (user-agent, allow, disallow, crawl-delay) (J)
+	* sitemap -> if it exsits, add all urls to frontier (J)
 
 * Datastore: To store the data and additional metadata used by the crawler. (postgresql) (A)
 	* create schema using prepared script
