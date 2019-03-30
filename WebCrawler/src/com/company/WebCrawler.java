@@ -190,7 +190,7 @@ public class WebCrawler implements Runnable {
                                     // allow page list
                                     ArrayList<String> allowedPages = checkAllowed.get(domain);
                                     for (String a : allowedPages) {
-                                        String aH = disa;
+                                        String aH = a;
                                         if (aH.substring(aH.length() - 1) == "*") {
                                             aH = disaH.substring(0, aH.length()-1);
                                         }
