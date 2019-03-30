@@ -98,10 +98,10 @@ public class WebCrawler implements Runnable {
                         // reading robots.txt file
                         while ((line = in.readLine()) != null) {
                             robotsTxt.append(line);
-                            if (line.contains("User-Agent: *")) {
+                            if ((line.contains("User-Agent: *")) || (line.contains("User-agent: *"))) {
                                 ourUserAgent = true;
                             }
-                            if ((line.contains("User-Agent:")) && (!line.contains("User-Agent: *"))) {
+                            if (((line.contains("User-Agent:")) && (!line.contains("User-Agent: *"))) || ((line.contains("User-agent:")) && (!line.contains("User-agent: *")))) {
                                 ourUserAgent = false;
                             }
                             if (ourUserAgent) {
@@ -127,34 +127,32 @@ public class WebCrawler implements Runnable {
                         // setting crawl delay for domain
                         Main.scheduler.getCrawlDelay().put(domain, crawlDel);
 
-                        if (!sitemapL.isEmpty()) {
-                            // checking for multiple sitemaps
-                            for (String s : sitemapL) {
+                        // checking for multiple sitemaps
+                        for (String s : sitemapL) {
 
-                                URL sitemapUrl = new URL(s);
-                                URLConnection sitemapUrlCon = sitemapUrl.openConnection();
-                                BufferedReader inSitemap = new BufferedReader(new InputStreamReader(sitemapUrlCon.getInputStream()));
-                                String line2;
+                            URL sitemapUrl = new URL(s);
+                            URLConnection sitemapUrlCon = sitemapUrl.openConnection();
+                            BufferedReader inSitemap = new BufferedReader(new InputStreamReader(sitemapUrlCon.getInputStream()));
+                            String line2;
 
-                                while ((line2 = inSitemap.readLine()) != null) {
-                                    sitemaps.append(line2);
+                            while ((line2 = inSitemap.readLine()) != null) {
+                                sitemaps.append(line2);
 
-                                    while (line2.contains("<loc>")) {
-                                        int start = line2.indexOf("<loc>");
-                                        int end = line2.indexOf("</loc>");
-                                        String stran2 = line2.substring(start + 5, end);
-                                        line2 = line2.replace(line2.substring(start, end + 6), "");
+                                while (line2.contains("<loc>")) {
+                                    int start = line2.indexOf("<loc>");
+                                    int end = line2.indexOf("</loc>");
+                                    String stran2 = line2.substring(start + 5, end);
+                                    line2 = line2.replace(line2.substring(start, end + 6), "");
 
-                                        // fix sitemap url
-                                        stran2 = stran2.contains(protocol) ? stran2.replace(protocol, "") : stran2;
-                                        stran2 = stran2.contains("https://") ? stran2.replace("https://", "") : stran2;
-                                        stran2 = stran2.contains("www.") ? stran2.replace("www.", "") : stran2;
+                                    // fix sitemap url
+                                    stran2 = stran2.contains(protocol) ? stran2.replace(protocol, "") : stran2;
+                                    stran2 = stran2.contains("https://") ? stran2.replace("https://", "") : stran2;
+                                    stran2 = stran2.contains("www.") ? stran2.replace("www.", "") : stran2;
 
-                                        // adding all pages from sitemap to frontier
-                                        Main.scheduler.getFrontier().add(stran2);
-                                    }
-                                    sitemaps.append("\n");
+                                    // adding all pages from sitemap to frontier
+                                    Main.scheduler.getFrontier().add(stran2);
                                 }
+                                sitemaps.append("\n");
                             }
                         }
 
