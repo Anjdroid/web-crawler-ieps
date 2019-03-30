@@ -74,14 +74,12 @@ public class WebCrawler implements Runnable {
                 // get side id from DB if site exists
                 int siteId = Main.db.getSiteFromDomain(domain);
 
-                StringBuilder sitemaps = new StringBuilder();
+                StringBuffer sitemaps = new StringBuffer();
                 StringBuffer robotsTxt = new StringBuffer();
 
                 if (siteId == -1) {
                     // domain is not in DB
                     // we collect robots.txt and sitemap content
-
-                    HashMap<String, ArrayList<String>> sitemap = new HashMap<>();
 
                     try {
                         URL robotsUrl = new URL(protocol + domain + "/robots.txt");
@@ -100,30 +98,29 @@ public class WebCrawler implements Runnable {
                         // reading robots.txt file
                         while ((line = in.readLine()) != null) {
                             robotsTxt.append(line);
-                            if (line == "User-Agent: *") {
+                            if (line.contains("User-Agent: *")) {
                                 ourUserAgent = true;
                             }
-                            if ((line.contains("User-Agent:")) && (line != "User-Agent: *")) {
+                            if ((line.contains("User-Agent:")) && (!line.contains("User-Agent: *"))) {
                                 ourUserAgent = false;
                             }
                             if (ourUserAgent) {
-                                if (line.contains("Disallow:")) {
+                                if ((line.contains("Disallow:")) && ((line.replace("Disallow: ", "")).length() > 0)) {
                                     disallowL.add(line.replace("Disallow: ", ""));
                                 }
-                                if ((line.contains("Allow:")) && (line.replace("Allow: ", "") != "/")) {
+                                if ((line.contains("Allow:")) && ((line.replace("Allow: ", "")).length() > 1)) {
                                     allowL.add(line.replace("Allow: ", ""));
                                 }
-                                if (line.contains("Crawl-delay:")) {
+                                if ((line.contains("Crawl-delay:")) && ((line.replace("Crawl-delay: ", "")).length() > 0)) {
                                     crawlDel = Integer.parseInt(line.replace("Crawl-delay: ", ""));
                                 }
                             }
-                            if (line.contains("Sitemap:")) {
+                            if ((line.contains("Sitemap:")) && ((line.replace("Sitemap: ", "")).length() > 0)) {
                                 sitemapL.add(line.replace("Sitemap: ", ""));
                             }
+                            robotsTxt.append("\n");
                         }
 
-                        // setting sitemap content for domain
-                        sitemap.put(domain, sitemapL);
                         // setting allowed and disallowed pages for domain
                         Main.scheduler.getAllowed().put(domain, allowL);
                         Main.scheduler.getDissallowed().put(domain, disallowL);
@@ -132,8 +129,6 @@ public class WebCrawler implements Runnable {
 
                         // checking for multiple sitemaps
                         for (String s : sitemapL) {
-                            sitemaps.append(s);
-                            sitemaps.append("\n");
 
                             URL sitemapUrl = new URL(s);
                             URLConnection sitemapUrlCon = sitemapUrl.openConnection();
@@ -141,6 +136,8 @@ public class WebCrawler implements Runnable {
                             String line2;
 
                             while ((line2 = inSitemap.readLine()) != null) {
+                                sitemaps.append(line2);
+
                                 while (line2.contains("<loc>")) {
                                     int start = line2.indexOf("<loc>");
                                     int end = line2.indexOf("</loc>");
@@ -155,6 +152,7 @@ public class WebCrawler implements Runnable {
                                     // adding all pages from sitemap to frontier
                                     Main.scheduler.getFrontier().add(stran2);
                                 }
+                                sitemaps.append("\n");
                             }
                         }
 
@@ -177,9 +175,19 @@ public class WebCrawler implements Runnable {
                     if (checkDisallowed.containsKey(domain)) {
                         // disallow pages list
                         ArrayList<String> disallowedPages = checkDisallowed.get(domain);
-                        if (disallowedPages.contains(pageToCrawl)) {
-                            // disallow list contains our current page
-                            allowCrawl = false;
+                        for (String disa : disallowedPages) {
+                            if (pageToCrawl.contains(disa)) {
+                                HashMap<String, ArrayList<String>> checkAllowed = Main.scheduler.getAllowed();
+                                if (checkAllowed.containsKey(domain)) {
+                                    // allow page list
+                                    ArrayList<String> allowedPages = checkAllowed.get(domain);
+                                    for (String a : allowedPages) {
+                                        if (!pageToCrawl.contains(a)) {
+                                            allowCrawl = false;
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
