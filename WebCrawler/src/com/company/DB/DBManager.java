@@ -30,11 +30,11 @@ public class DBManager {
         return conn;
     }
 
-    public int checkSize() {
+    public int checkSize(Connection conn) {
         int size = 0;
         String query = "SELECT count(*) FROM crawldb.page WHERE page_type_code = 'HTML';";
         try {
-            PreparedStatement pst = Main.conn.prepareStatement(query);
+            PreparedStatement pst = conn.prepareStatement(query);
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
                 size = rs.getInt(1);
@@ -45,12 +45,12 @@ public class DBManager {
         return size;
     }
 
-    public int savePage(Page page) {
+    public int savePage(Page page, Connection conn) {
         int pageId = 0;
         String query = "INSERT INTO crawldb.page(site_id, page_type_code, url, html_content, http_status_code, accessed_time, hashcode) VALUES(?, ?, ?, ?, ?, ?, ?)";
 
         try {
-            PreparedStatement pst = Main.conn.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement pst = conn.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
 
             pst.setInt(1, page.getSiteId());
             pst.setString(2, page.getPageTypeCode());
@@ -72,11 +72,11 @@ public class DBManager {
         return pageId;
     }
 
-    public int getSiteFromDomain(String domain) {
+    public int getSiteFromDomain(String domain, Connection conn) {
         int siteId = -1;
         String query = "SELECT id FROM crawldb.site WHERE domain = ?";
         try {
-            PreparedStatement pst = Main.conn.prepareStatement(query);
+            PreparedStatement pst = conn.prepareStatement(query);
             pst.setString(1, domain);
 
             ResultSet rs = pst.executeQuery();
@@ -89,12 +89,12 @@ public class DBManager {
         return siteId;
     }
 
-    public Page getPageFromHash(int hash) {
+    public Page getPageFromHash(int hash, Connection conn) {
         String query = "SELECT id, site_id, http_status_code, hashcode FROM crawldb.page WHERE hashcode = ?";
 
         Page p = new Page();
         try {
-            PreparedStatement pst = Main.conn.prepareStatement(query);
+            PreparedStatement pst = conn.prepareStatement(query);
             pst.setInt(1, hash);
 
             ResultSet rs = pst.executeQuery();
@@ -111,12 +111,12 @@ public class DBManager {
         return p;
     }
 
-    public Page getPageFromUrl(String url) {
+    public Page getPageFromUrl(String url, Connection conn) {
         String query = "SELECT id, site_id, http_status_code, hashcode FROM crawldb.page WHERE url = ?";
 
         Page p = new Page();
         try {
-            PreparedStatement pst = Main.conn.prepareStatement(query);
+            PreparedStatement pst = conn.prepareStatement(query);
             pst.setString(1, url);
 
             ResultSet rs = pst.executeQuery();
@@ -132,13 +132,13 @@ public class DBManager {
         return p;
     }
 
-    public int saveSite(Site site) {
+    public int saveSite(Site site, Connection conn) {
 
         int siteId = 0;
         String query = "INSERT INTO crawldb.site(domain, robots_content, sitemap_content) VALUES(?, ?, ?)";
 
         try {
-            PreparedStatement pst = Main.conn.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement pst = conn.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
 
             pst.setString(1, site.getDomain());
             pst.setString(2, site.getRobotsRontent());
@@ -156,11 +156,11 @@ public class DBManager {
         return siteId;
     }
 
-    public void saveImage(Image image) {
+    public void saveImage(Image image, Connection conn) {
         String query = "INSERT INTO crawldb.image(page_id, filename, content_type, data, accessed_time) VALUES(?, ?, ?, ?, ?)";
 
         try {
-            PreparedStatement pst = Main.conn.prepareStatement(query);
+            PreparedStatement pst = conn.prepareStatement(query);
 
             pst.setInt(1, image.getPageId());
             pst.setString(2, image.getFilename());
@@ -173,12 +173,12 @@ public class DBManager {
         }
     }
 
-    public void savePageData(PageData pageData) {
+    public void savePageData(PageData pageData, Connection conn) {
 
         String query = "INSERT INTO crawldb.page_data(page_id, data_type_code, data) VALUES(?, ?, ?)";
 
         try {
-            PreparedStatement pst = Main.conn.prepareStatement(query);
+            PreparedStatement pst = conn.prepareStatement(query);
 
             pst.setInt(1, pageData.getPageId());
             pst.setString(2, pageData.getDataTypeCode());
@@ -193,11 +193,11 @@ public class DBManager {
 
     }
 
-    public void setLinkToFromPage(Link link) {
+    public void setLinkToFromPage(Link link, Connection conn) {
         String query = "INSERT INTO crawldb.link(from_page, to_page) VALUES(?, ?)";
 
         try {
-            PreparedStatement pst = Main.conn.prepareStatement(query);
+            PreparedStatement pst = conn.prepareStatement(query);
 
             pst.setInt(1, link.getFromPage());
             pst.setInt(2, link.getToPage());

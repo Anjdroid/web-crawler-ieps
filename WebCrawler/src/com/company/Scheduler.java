@@ -34,31 +34,31 @@ public class Scheduler {
         frontier.add("mzi.gov.si");
     }
 
-    public  HashMap<String, ArrayList<String>>  getAllowed() {
+    public synchronized HashMap<String, ArrayList<String>> getAllowed() {
         return allow;
     }
 
-    public  HashMap<String, String>  getParentChild() {
+    public synchronized HashMap<String, String> getParentChild() {
         return parentChild;
     }
 
-    public  HashMap<String, ArrayList<String>>  getDissallowed() {
+    public synchronized HashMap<String, ArrayList<String>> getDisallowed() {
         return disallow;
     }
 
-    public  HashMap<String,Integer>  getCrawlDelay() {
+    public synchronized HashMap<String,Integer> getCrawlDelay() {
         return crawlDelay;
     }
 
-    public Queue<String> getFrontier() {
+    public synchronized Queue<String> getFrontier() {
         return frontier;
     }
 
-    public Set<String> getVisited() {
+    public synchronized Set<String> getVisited() {
         return visited;
     }
 
-    public static boolean isDuplicate(String page) {
+    public synchronized static boolean isDuplicate(String page) {
         // check if URL is already in visited pages
         return !visited.contains(page);
     }

@@ -22,6 +22,8 @@ public class WebCrawler implements Runnable {
     private final static Logger LOGGER = Logger.getLogger(DBManager.class.getName());
     private String protocol = "http://";
     private List<String> docs;
+    private boolean exit;
+    private Connection conn;
 
     public WebCrawler() {
         docs = new ArrayList<>();
@@ -30,6 +32,8 @@ public class WebCrawler implements Runnable {
         docs.add("application/vnd.openxmlformats-officedocument.presentationml.presentation");
         docs.add("application/msword");
         docs.add("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+        // connect to database
+        conn = Main.db.connect();
     }
 
     public void getPageLinks() {
@@ -43,7 +47,7 @@ public class WebCrawler implements Runnable {
             // add url to visited pages
             Main.scheduler.getVisited().add(pageToCrawl);
 
-            if (Main.db.checkSize() > 100000) {
+            if (Main.db.checkSize(conn) > 100000) {
                 LOGGER.info("100.000 pages visited");
                 return;
             }
@@ -58,7 +62,7 @@ public class WebCrawler implements Runnable {
             // first check if page is a duplicate in visited pages set
             if (Scheduler.isDuplicate(pageToCrawl)) {
                 // save page as DUPLICATE to database
-                Page duplicate = Main.db.getPageFromUrl(pageToCrawl);
+                Page duplicate = Main.db.getPageFromUrl(pageToCrawl, conn);
                 saveDuplicate(pageToCrawl, duplicate);
             } else {
 
@@ -68,7 +72,7 @@ public class WebCrawler implements Runnable {
                 boolean robotsExist = false;
 
                 // get side id from DB if site exists
-                int siteId = Main.db.getSiteFromDomain(domain);
+                int siteId = Main.db.getSiteFromDomain(domain, conn);
 
                 StringBuffer sitemaps = new StringBuffer();
                 StringBuffer robotsTxt = new StringBuffer();
@@ -139,7 +143,7 @@ public class WebCrawler implements Runnable {
 
                         // setting allowed and disallowed pages for domain
                         Main.scheduler.getAllowed().put(domain, allowL);
-                        Main.scheduler.getDissallowed().put(domain, disallowL);
+                        Main.scheduler.getDisallowed().put(domain, disallowL);
                         // setting crawl delay for domain
                         Main.scheduler.getCrawlDelay().put(domain, crawlDel);
 
@@ -192,7 +196,7 @@ public class WebCrawler implements Runnable {
                 // check if we can crawl the page
                 if (robotsExist) {
 
-                    HashMap<String, ArrayList<String>> checkDisallowed = Main.scheduler.getDissallowed();
+                    HashMap<String, ArrayList<String>> checkDisallowed = Main.scheduler.getDisallowed();
                     if (checkDisallowed.containsKey(domain)) {
                         // disallow pages list
                         ArrayList<String> disallowedPages = checkDisallowed.get(domain);
@@ -278,11 +282,11 @@ public class WebCrawler implements Runnable {
                                 // get site id and save site to db
                                 siteId = getSiteId(domain, sitemaps.toString(), robotsTxt.toString());
                                 // save page as BINARY to DB
-                                pageId = Main.db.savePage(new Page(siteId, "BINARY", pageToCrawl, null, statusCode, timestamp, 0));
+                                pageId = Main.db.savePage(new Page(siteId, "BINARY", pageToCrawl, null, statusCode, timestamp, 0), conn);
                                 // read file data
                                 byte[] fileData = readImageFromUrl(pageToCrawl, pageToCrawl, true);
                                 // save document to DB
-                                Main.db.savePageData(new PageData(pageId, getFileExtension(contentType), fileData));
+                                Main.db.savePageData(new PageData(pageId, getFileExtension(contentType), fileData), conn);
                             } else if (contentType.equals("text/html")) {
                                 // page is html content
 
@@ -304,7 +308,7 @@ public class WebCrawler implements Runnable {
                                 } else {
                                     // page is not a duplicate
 
-                                    pageId = Main.db.savePage(new Page(siteId, "HTML", pageToCrawl, cleaned.html(), statusCode, timestamp, pageContentHash));
+                                    pageId = Main.db.savePage(new Page(siteId, "HTML", pageToCrawl, cleaned.html(), statusCode, timestamp, pageContentHash), conn);
 
                                     // fetch images on page
                                     Elements imagesOnPage = document.select("img[src~=(?i)\\.(png|jpe?g|svg|gif)]");
@@ -337,10 +341,10 @@ public class WebCrawler implements Runnable {
                             // set link from to page
                             String parentPage = Main.scheduler.getParentChild().get(pageToCrawl);
                             if (parentPage != null) {
-                                LOGGER.info("setting link page url: " + parentPage + " " + Main.db.getPageFromUrl(parentPage).getId() +
+                                LOGGER.info("setting link page url: " + parentPage + " " + Main.db.getPageFromUrl(parentPage, conn).getId() +
                                         " to page: " + pageId + " " + pageToCrawl);
-                                Main.db.setLinkToFromPage(new Link(Main.db.getPageFromUrl(parentPage).getId(),
-                                        Main.db.getPageFromUrl(pageToCrawl).getId()));
+                                Main.db.setLinkToFromPage(new Link(Main.db.getPageFromUrl(parentPage, conn).getId(),
+                                        Main.db.getPageFromUrl(pageToCrawl, conn).getId()), conn);
                             }
                         }
                     } catch (IOException e) {
@@ -356,10 +360,10 @@ public class WebCrawler implements Runnable {
     private int getSiteId(String domain, String sitemaps, String robots) {
         int siteId = 0;
         // get side id from DB
-        siteId = Main.db.getSiteFromDomain(domain);
+        siteId = Main.db.getSiteFromDomain(domain, conn);
         if (siteId == -1) {
             // add site if its not already in DB
-            siteId = Main.db.saveSite(new Site(domain, robots, sitemaps));
+            siteId = Main.db.saveSite(new Site(domain, robots, sitemaps), conn);
         }
         return siteId;
     }
@@ -378,7 +382,7 @@ public class WebCrawler implements Runnable {
 
     private Page isContentDuplicate(int hashcode) {
         // check page content for duplicate
-        Page page = Main.db.getPageFromHash(hashcode);
+        Page page = Main.db.getPageFromHash(hashcode, conn);
         return page;
     }
 
@@ -429,7 +433,7 @@ public class WebCrawler implements Runnable {
             Timestamp accessTime = new Timestamp(System.currentTimeMillis());
 
             // save image to DB
-            Main.db.saveImage(new Image(pageId, filename, contentType, accessTime, imageData));
+            Main.db.saveImage(new Image(pageId, filename, contentType, accessTime, imageData), conn);
         }
     }
 
@@ -447,8 +451,8 @@ public class WebCrawler implements Runnable {
     private void saveDuplicate(String pageToCrawl, Page duplicatePage) {
         // save page to DB as DUPLICATE
         int pageId = Main.db.savePage(new Page(duplicatePage.getSiteId(), "DUPLICATE", pageToCrawl+"-duplicate", null,
-                duplicatePage.getHttpStatusCode(), new Timestamp(System.currentTimeMillis()), duplicatePage.getHashcode()));
-        Main.db.setLinkToFromPage(new Link(duplicatePage.getId(), pageId));
+                duplicatePage.getHttpStatusCode(), new Timestamp(System.currentTimeMillis()), duplicatePage.getHashcode()), conn);
+        Main.db.setLinkToFromPage(new Link(duplicatePage.getId(), pageId), conn);
     }
 
     private byte[] readImageFromUrl(String imageUrl, String filename, boolean isDoc) {
