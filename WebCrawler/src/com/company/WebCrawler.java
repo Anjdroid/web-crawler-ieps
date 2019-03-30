@@ -182,6 +182,11 @@ public class WebCrawler implements Runnable {
                     }
                 }
 
+                if (!Main.scheduler.getCrawlDelay().containsKey(domain)) {
+                    int crawlDel = 4;
+                    Main.scheduler.getCrawlDelay().put(domain, crawlDel);
+                }
+
                 boolean allowCrawl = true;
 
                 // check if we can crawl the page
@@ -234,7 +239,7 @@ public class WebCrawler implements Runnable {
                 }
 
                 if (allowCrawl) {
-                    if (robotsExist && !Main.scheduler.getCrawlDelay().isEmpty()) {
+                    if (Main.scheduler.getCrawlDelay().containsKey(domain)) {
                         // getting crawl delay for domain
                         int spi = Main.scheduler.getCrawlDelay().get(domain);
                         spi = spi * 1000;
