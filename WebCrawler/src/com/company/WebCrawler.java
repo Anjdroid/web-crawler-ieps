@@ -79,7 +79,27 @@ public class WebCrawler implements Runnable {
 
                     try {
                         URL robotsUrl = new URL(protocol + domain + "/robots.txt");
-                        URLConnection robotsUrlCon = robotsUrl.openConnection();
+                        HttpURLConnection robotsUrlCon = (HttpURLConnection) robotsUrl.openConnection();
+                        robotsUrlCon.setReadTimeout(5000);
+
+                        boolean redirect = false;
+
+                        int status = robotsUrlCon.getResponseCode();
+                        if (status != HttpURLConnection.HTTP_OK) {
+                            if (status == HttpURLConnection.HTTP_MOVED_TEMP
+                                    || status == HttpURLConnection.HTTP_MOVED_PERM
+                                    || status == HttpURLConnection.HTTP_SEE_OTHER)
+                                redirect = true;
+                        }
+
+                        if (redirect) {
+                            // get redirect url from "location" header field
+                            String newUrl = robotsUrlCon.getHeaderField("Location");
+
+                            // open the new connnection again
+                            robotsUrlCon = (HttpURLConnection) new URL(newUrl).openConnection();
+                        }
+
                         BufferedReader in = new BufferedReader(new InputStreamReader(robotsUrlCon.getInputStream()));
                         String line;
 
@@ -180,7 +200,7 @@ public class WebCrawler implements Runnable {
                             if ((disaH.substring(0,1)).contains("*")) {
                                 disaH = disaH.substring(1);
                             }
-                            else if ((disaH.substring(0,2)).contains("/*")) {
+                            else if ((disaH.length() > 1) && ((disaH.substring(0,2)).contains("/*"))) {
                                 disaH = disaH.substring(2);
                             }
                             if (pageToCrawl.contains(disaH)) {
