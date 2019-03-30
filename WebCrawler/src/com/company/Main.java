@@ -19,7 +19,7 @@ public class Main {
     public static DBManager db;
     //public static Connection conn;
     public static Scheduler scheduler;
-    private static int numberOfThreads = 3;
+    private static int numberOfThreads = 20;
     private static List<Runnable> threads;
 
     public static void main(String[] args) {
