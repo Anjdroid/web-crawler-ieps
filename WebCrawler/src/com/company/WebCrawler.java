@@ -127,32 +127,34 @@ public class WebCrawler implements Runnable {
                         // setting crawl delay for domain
                         Main.scheduler.getCrawlDelay().put(domain, crawlDel);
 
-                        // checking for multiple sitemaps
-                        for (String s : sitemapL) {
+                        if (!sitemapL.isEmpty()) {
+                            // checking for multiple sitemaps
+                            for (String s : sitemapL) {
 
-                            URL sitemapUrl = new URL(s);
-                            URLConnection sitemapUrlCon = sitemapUrl.openConnection();
-                            BufferedReader inSitemap = new BufferedReader(new InputStreamReader(sitemapUrlCon.getInputStream()));
-                            String line2;
+                                URL sitemapUrl = new URL(s);
+                                URLConnection sitemapUrlCon = sitemapUrl.openConnection();
+                                BufferedReader inSitemap = new BufferedReader(new InputStreamReader(sitemapUrlCon.getInputStream()));
+                                String line2;
 
-                            while ((line2 = inSitemap.readLine()) != null) {
-                                sitemaps.append(line2);
+                                while ((line2 = inSitemap.readLine()) != null) {
+                                    sitemaps.append(line2);
 
-                                while (line2.contains("<loc>")) {
-                                    int start = line2.indexOf("<loc>");
-                                    int end = line2.indexOf("</loc>");
-                                    String stran2 = line2.substring(start + 5, end);
-                                    line2 = line2.replace(line2.substring(start, end + 6), "");
+                                    while (line2.contains("<loc>")) {
+                                        int start = line2.indexOf("<loc>");
+                                        int end = line2.indexOf("</loc>");
+                                        String stran2 = line2.substring(start + 5, end);
+                                        line2 = line2.replace(line2.substring(start, end + 6), "");
 
-                                    // fix sitemap url
-                                    stran2 = stran2.contains(protocol) ? stran2.replace(protocol, "") : stran2;
-                                    stran2 = stran2.contains("https://") ? stran2.replace("https://", "") : stran2;
-                                    stran2 = stran2.contains("www.") ? stran2.replace("www.", "") : stran2;
+                                        // fix sitemap url
+                                        stran2 = stran2.contains(protocol) ? stran2.replace(protocol, "") : stran2;
+                                        stran2 = stran2.contains("https://") ? stran2.replace("https://", "") : stran2;
+                                        stran2 = stran2.contains("www.") ? stran2.replace("www.", "") : stran2;
 
-                                    // adding all pages from sitemap to frontier
-                                    Main.scheduler.getFrontier().add(stran2);
+                                        // adding all pages from sitemap to frontier
+                                        Main.scheduler.getFrontier().add(stran2);
+                                    }
+                                    sitemaps.append("\n");
                                 }
-                                sitemaps.append("\n");
                             }
                         }
 
