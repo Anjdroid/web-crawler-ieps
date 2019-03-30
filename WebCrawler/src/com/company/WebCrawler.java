@@ -172,15 +172,18 @@ public class WebCrawler implements Runnable {
                     if (checkDisallowed.containsKey(domain)) {
                         // disallow pages list
                         ArrayList<String> disallowedPages = checkDisallowed.get(domain);
+                        outerloop:
                         for (String disa : disallowedPages) {
                             if (pageToCrawl.contains(disa)) {
+                                allowCrawl = false;
                                 HashMap<String, ArrayList<String>> checkAllowed = Main.scheduler.getAllowed();
                                 if (checkAllowed.containsKey(domain)) {
                                     // allow page list
                                     ArrayList<String> allowedPages = checkAllowed.get(domain);
                                     for (String a : allowedPages) {
-                                        if (!pageToCrawl.contains(a)) {
-                                            allowCrawl = false;
+                                        if (pageToCrawl.contains(a)) {
+                                            allowCrawl = true;
+                                            break outerloop;
                                         }
                                     }
                                 } else {
