@@ -11,10 +11,7 @@ import org.jsoup.safety.Whitelist;
 import org.jsoup.select.Elements;
 
 import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
 import java.nio.file.Files;
 import java.sql.*;
 import java.util.*;
@@ -186,6 +183,8 @@ public class WebCrawler implements Runnable {
                                             allowCrawl = false;
                                         }
                                     }
+                                } else {
+                                    allowCrawl = false;
                                 }
                             }
                         }
@@ -396,7 +395,7 @@ public class WebCrawler implements Runnable {
 
     private void saveDuplicate(String pageToCrawl, Page duplicatePage) {
         // save page to DB as DUPLICATE
-        int pageId = Main.db.savePage(new Page(duplicatePage.getSiteId(), "DUPLICATE", pageToCrawl, null,
+        int pageId = Main.db.savePage(new Page(duplicatePage.getSiteId(), "DUPLICATE", pageToCrawl+"-duplicate", null,
                 duplicatePage.getHttpStatusCode(), new Timestamp(System.currentTimeMillis()), duplicatePage.getHashcode()));
         Main.db.setLinkToFromPage(new Link(duplicatePage.getId(), pageId));
     }
@@ -410,7 +409,11 @@ public class WebCrawler implements Runnable {
                 // if url is a document add protocol to link for download
                 url = new URL(protocol + imageUrl);
             } else {
-                url = new URL(imageUrl);
+                try {
+                    url = new URL(imageUrl);
+                } catch (MalformedURLException e) {
+                    url = new URL(protocol + imageUrl);
+                }
             }
 
             InputStream input = new BufferedInputStream(url.openStream());
