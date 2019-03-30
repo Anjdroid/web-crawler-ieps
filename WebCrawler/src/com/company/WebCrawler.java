@@ -173,14 +173,34 @@ public class WebCrawler implements Runnable {
                         ArrayList<String> disallowedPages = checkDisallowed.get(domain);
                         outerloop:
                         for (String disa : disallowedPages) {
-                            if (pageToCrawl.contains(disa)) {
+                            String disaH = disa;
+                            if (disaH.substring(disaH.length() - 1) == "*") {
+                                disaH = disaH.substring(0, disaH.length()-1);
+                            }
+                            if (disaH.substring(0,1) == "*") {
+                                disaH = disaH.substring(1);
+                            }
+                            else if (disaH.substring(0,2) == "/*") {
+                                disaH = disaH.substring(2);
+                            }
+                            if (pageToCrawl.contains(disaH)) {
                                 allowCrawl = false;
                                 HashMap<String, ArrayList<String>> checkAllowed = Main.scheduler.getAllowed();
                                 if (checkAllowed.containsKey(domain)) {
                                     // allow page list
                                     ArrayList<String> allowedPages = checkAllowed.get(domain);
                                     for (String a : allowedPages) {
-                                        if (pageToCrawl.contains(a)) {
+                                        String aH = disa;
+                                        if (aH.substring(aH.length() - 1) == "*") {
+                                            aH = disaH.substring(0, aH.length()-1);
+                                        }
+                                        if (aH.substring(0,1) == "*") {
+                                            aH = aH.substring(1);
+                                        }
+                                        else if (aH.substring(0,2) == "/*") {
+                                            aH = aH.substring(2);
+                                        }
+                                        if (pageToCrawl.contains(aH)) {
                                             allowCrawl = true;
                                             break outerloop;
                                         }
