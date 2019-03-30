@@ -218,82 +218,86 @@ public class WebCrawler implements Runnable {
 
                         // download page
                         final com.gargoylesoftware.htmlunit.Page page = webClient.getPage(protocol + pageToCrawl);
-                        // wait 5s for JS to load
-                        webClient.waitForBackgroundJavaScriptStartingBefore(5000);
-
                         int statusCode = page.getWebResponse().getStatusCode();
-                        String contentType = page.getWebResponse().getContentType();
 
-                        if (docs.contains(contentType)) {
-                            // page is a document
-                            LOGGER.info("is document");
+                        if (statusCode != 404 && statusCode != 500) {
 
-                            // get site id and save site to db
-                            siteId = getSiteId(domain, sitemaps.toString(), robotsTxt.toString());
-                            // save page as BINARY to DB
-                            pageId = Main.db.savePage(new Page(siteId, "BINARY", pageToCrawl, null, statusCode, timestamp, 0));
-                            // read file data
-                            byte[] fileData = readImageFromUrl(pageToCrawl, pageToCrawl, true);
-                            // save document to DB
-                            Main.db.savePageData(new PageData(pageId, getFileExtension(contentType), fileData));
-                        } else if (contentType.equals("text/html")) {
-                            // page is html content
+                            // wait 5s for JS to load
+                            webClient.waitForBackgroundJavaScriptStartingBefore(5000);
 
-                            // get site id and save site to DB
-                            siteId = getSiteId(domain, sitemaps.toString(), robotsTxt.toString());
+                            String contentType = page.getWebResponse().getContentType();
 
-                            HtmlPage htmlPage = (HtmlPage) page;
-                            Document document = Jsoup.parse(htmlPage.asXml());
+                            if (docs.contains(contentType)) {
+                                // page is a document
+                                LOGGER.info("is document");
 
-                            // get cleaned HTML
-                            String cleanDoc = Jsoup.clean(document.html(), Whitelist.relaxed());
-                            Document cleaned = Jsoup.parse(cleanDoc);
+                                // get site id and save site to db
+                                siteId = getSiteId(domain, sitemaps.toString(), robotsTxt.toString());
+                                // save page as BINARY to DB
+                                pageId = Main.db.savePage(new Page(siteId, "BINARY", pageToCrawl, null, statusCode, timestamp, 0));
+                                // read file data
+                                byte[] fileData = readImageFromUrl(pageToCrawl, pageToCrawl, true);
+                                // save document to DB
+                                Main.db.savePageData(new PageData(pageId, getFileExtension(contentType), fileData));
+                            } else if (contentType.equals("text/html")) {
+                                // page is html content
 
-                            int pageContentHash = cleaned.html().hashCode();
-                            // duplicate detection: check if hashcode is in database
-                            Page pageDuplicate = isContentDuplicate(pageContentHash);
-                            if (pageDuplicate.getId() > 0) {
-                                saveDuplicate(pageToCrawl, pageDuplicate);
-                            } else {
-                                // page is not a duplicate
+                                // get site id and save site to DB
+                                siteId = getSiteId(domain, sitemaps.toString(), robotsTxt.toString());
 
-                                pageId = Main.db.savePage(new Page(siteId, "HTML", pageToCrawl, cleaned.html(), statusCode, timestamp, pageContentHash));
+                                HtmlPage htmlPage = (HtmlPage) page;
+                                Document document = Jsoup.parse(htmlPage.asXml());
 
-                                // fetch images on page
-                                Elements imagesOnPage = document.select("img[src~=(?i)\\.(png|jpe?g|svg|gif)]");
+                                // get cleaned HTML
+                                String cleanDoc = Jsoup.clean(document.html(), Whitelist.relaxed());
+                                Document cleaned = Jsoup.parse(cleanDoc);
 
-                                // extract images
-                                findImagesOnPage(imagesOnPage, pageId, false);
+                                int pageContentHash = cleaned.html().hashCode();
+                                // duplicate detection: check if hashcode is in database
+                                Page pageDuplicate = isContentDuplicate(pageContentHash);
+                                if (pageDuplicate.getId() > 0) {
+                                    saveDuplicate(pageToCrawl, pageDuplicate);
+                                } else {
+                                    // page is not a duplicate
 
-                                // parse HTML to extract <a /> attrs with links
-                                Elements linksOnPage = document.select("a[href]");
+                                    pageId = Main.db.savePage(new Page(siteId, "HTML", pageToCrawl, cleaned.html(), statusCode, timestamp, pageContentHash));
 
-                                // getting all the links from the page
-                                for (Element p : linksOnPage) {
-                                    String pageUrl = p.attr("abs:href");
+                                    // fetch images on page
+                                    Elements imagesOnPage = document.select("img[src~=(?i)\\.(png|jpe?g|svg|gif)]");
 
-                                    if (!pageUrl.equals("")) {
+                                    // extract images
+                                    findImagesOnPage(imagesOnPage, pageId, false);
 
-                                        LOGGER.info("page url: " + pageUrl + " from page " + pageToCrawl);
-                                        if (pageUrl.contains("//")) {
-                                            pageUrl = pageUrl.split("//")[1];
+                                    // parse HTML to extract <a /> attrs with links
+                                    Elements linksOnPage = document.select("a[href]");
+
+                                    // getting all the links from the page
+                                    for (Element p : linksOnPage) {
+                                        String pageUrl = p.attr("abs:href");
+
+                                        if (!pageUrl.equals("")) {
+
+                                            LOGGER.info("page url: " + pageUrl + " from page " + pageToCrawl);
+                                            if (pageUrl.contains("//")) {
+                                                pageUrl = pageUrl.split("//")[1];
+                                            }
+
+                                            // add page to frontier
+                                            Main.scheduler.getFrontier().add(pageUrl);
+                                            Main.scheduler.getParentChild().put(pageUrl, pageToCrawl);
+
                                         }
-
-                                        // add page to frontier
-                                        Main.scheduler.getFrontier().add(pageUrl);
-                                        Main.scheduler.getParentChild().put(pageUrl, pageToCrawl);
-
                                     }
                                 }
                             }
-                        }
-                        // set link from to page
-                        String parentPage = Main.scheduler.getParentChild().get(pageToCrawl);
-                        if (parentPage != null) {
-                            LOGGER.info("setting link page url: " + parentPage + " " + Main.db.getPageFromUrl(parentPage).getId() +
-                                    " to page: " + pageId + " " + pageToCrawl);
-                            Main.db.setLinkToFromPage(new Link(Main.db.getPageFromUrl(parentPage).getId(),
-                                    Main.db.getPageFromUrl(pageToCrawl).getId()));
+                            // set link from to page
+                            String parentPage = Main.scheduler.getParentChild().get(pageToCrawl);
+                            if (parentPage != null) {
+                                LOGGER.info("setting link page url: " + parentPage + " " + Main.db.getPageFromUrl(parentPage).getId() +
+                                        " to page: " + pageId + " " + pageToCrawl);
+                                Main.db.setLinkToFromPage(new Link(Main.db.getPageFromUrl(parentPage).getId(),
+                                        Main.db.getPageFromUrl(pageToCrawl).getId()));
+                            }
                         }
                     } catch (IOException e) {
                         LOGGER.info("Error for: " + pageToCrawl);
