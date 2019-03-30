@@ -30,6 +30,21 @@ public class DBManager {
         return conn;
     }
 
+    public int checkSize() {
+        int size = 0;
+        String query = "SELECT count(*) FROM crawldb.page WHERE page_type_code = 'HTML';";
+        try {
+            PreparedStatement pst = Main.conn.prepareStatement(query);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                size = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return size;
+    }
+
     public int savePage(Page page) {
         int pageId = 0;
         String query = "INSERT INTO crawldb.page(site_id, page_type_code, url, html_content, http_status_code, accessed_time, hashcode) VALUES(?, ?, ?, ?, ?, ?, ?)";

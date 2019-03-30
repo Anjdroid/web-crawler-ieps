@@ -43,9 +43,8 @@ public class WebCrawler implements Runnable {
             // add url to visited pages
             Main.scheduler.getVisited().add(pageToCrawl);
 
-            // stop when 100 pages visited -- for now
-            if (Main.scheduler.getVisited().size() > 10000) {
-                LOGGER.info("10000 pages visited");
+            if (Main.db.checkSize() > 100000) {
+                LOGGER.info("100.000 pages visited");
                 return;
             }
 

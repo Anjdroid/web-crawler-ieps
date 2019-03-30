@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0d005748-d3b8-4a98-b90c-d719e18715ea" name="Default Changelist" comment="save to db v2">
+    <list default="true" id="0d005748-d3b8-4a98-b90c-d719e18715ea" name="Default Changelist" comment="// some fixes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/WebCrawler/com/company/DB/DBManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/WebCrawler/com/company/DB/DBManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/WebCrawler/com/company/DB/Page.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/WebCrawler/com/company/DB/Page.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/WebCrawler/com/company/DB/PageType.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/WebCrawler/com/company/DB/PageType.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/WebCrawler/com/company/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/WebCrawler/com/company/Main.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/WebCrawler/com/company/Scheduler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/WebCrawler/com/company/Scheduler.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/WebCrawler/com/company/WebCrawler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/WebCrawler/com/company/WebCrawler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/DB/DBManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/DB/DBManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/company/WebCrawler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/WebCrawler.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -37,11 +36,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/com/company/Main.java">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/company/WebCrawler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="104">
-              <caret line="15" column="42" selection-start-line="15" selection-start-column="42" selection-end-line="15" selection-end-column="42" />
+            <state relative-caret-position="116">
+              <caret line="44" selection-start-line="44" selection-end-line="44" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -50,19 +49,19 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/company/Scheduler.java">
+        <entry file="file://$PROJECT_DIR$/src/com/company/DB/Image.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="185">
-              <caret line="24" column="34" selection-start-line="24" selection-start-column="34" selection-end-line="24" selection-end-column="34" />
+            <state relative-caret-position="381">
+              <caret line="67" column="5" selection-start-line="67" selection-start-column="5" selection-end-line="67" selection-end-column="5" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/company/WebCrawler.java">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/com/company/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="174">
-              <caret line="278" column="25" lean-forward="true" selection-start-line="278" selection-start-column="25" selection-end-line="278" selection-end-column="25" />
+            <state relative-caret-position="296">
+              <caret line="26" selection-start-line="26" selection-end-line="26" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -73,7 +72,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/company/DB/Site.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-186">
+            <state relative-caret-position="68">
               <caret line="4" column="19" selection-start-line="4" selection-start-column="19" selection-end-line="4" selection-end-column="19" />
             </state>
           </provider>
@@ -82,7 +81,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/company/DB/Page.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="212">
+            <state relative-caret-position="255">
               <caret line="15" column="19" selection-start-line="15" selection-start-column="19" selection-end-line="15" selection-end-column="19" />
             </state>
           </provider>
@@ -91,7 +90,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/company/DB/PageData.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-203">
+            <state relative-caret-position="34">
               <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
             </state>
           </provider>
@@ -109,8 +108,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/company/DB/DBManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="381">
-              <caret line="28" column="9" selection-start-line="28" selection-start-column="9" selection-end-line="28" selection-end-column="9" />
+            <state relative-caret-position="40">
+              <caret line="32" column="24" selection-start-line="32" selection-start-column="15" selection-end-line="32" selection-end-column="24" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -155,7 +154,6 @@
       <find>QJU</find>
       <find>content</find>
       <find>status code</find>
-      <find>status</find>
       <find>link</find>
       <find>crawldb.link</find>
       <find>page url</find>
@@ -173,6 +171,9 @@
       <find>ERROR</find>
       <find>current</find>
       <find>from p</find>
+      <find>getting page id from hash</find>
+      <find>saveDu</find>
+      <find>status</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -191,10 +192,11 @@
         <option value="$PROJECT_DIR$/src/com/company/DBManager.java" />
         <option value="$PROJECT_DIR$/src/com/company/DB/Image.java" />
         <option value="$PROJECT_DIR$/src/com/company/Robots.java" />
-        <option value="$PROJECT_DIR$/src/com/company/DB/DBManager.java" />
         <option value="$PROJECT_DIR$/src/com/company/DB/Page.java" />
         <option value="$PROJECT_DIR$/src/com/company/DB/PageType.java" />
         <option value="$PROJECT_DIR$/src/com/company/Scheduler.java" />
+        <option value="$PROJECT_DIR$/../../Magisterij/1. letnik/Algoritmi/Seminar1/Seminar1.java" />
+        <option value="$PROJECT_DIR$/src/com/company/DB/DBManager.java" />
         <option value="$PROJECT_DIR$/src/com/company/WebCrawler.java" />
         <option value="$PROJECT_DIR$/src/com/company/Main.java" />
       </list>
@@ -207,9 +209,9 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="960" />
+    <option name="y" value="2" />
     <option name="width" value="960" />
-    <option name="height" value="1030" />
+    <option name="height" value="1040" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -217,6 +219,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -246,8 +250,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -255,7 +257,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1553633663363" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../Magisterij/1. letnik/IEPS/web-crawler-ieps" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../Magisterij/1. letnik/Algoritmi/Seminar1/ogrodje" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -333,7 +335,9 @@
       <workItem from="1553778917574" duration="5236000" />
       <workItem from="1553787626403" duration="2374000" />
       <workItem from="1553795888422" duration="8775000" />
-      <workItem from="1553813585491" duration="4156000" />
+      <workItem from="1553813585491" duration="5557000" />
+      <workItem from="1553892024310" duration="2543000" />
+      <workItem from="1553955979321" duration="5732000" />
     </task>
     <task id="LOCAL-00001" summary="Save page data, save link added.">
       <created>1552776925094</created>
@@ -356,11 +360,25 @@
       <option name="project" value="LOCAL" />
       <updated>1553789089788</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="// some fixes">
+      <created>1553962789605</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1553962789605</updated>
+    </task>
+    <task id="LOCAL-00005" summary="// response code check">
+      <created>1553963233851</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1553963233851</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="94294000" />
+    <option name="totallyTimeSpent" value="103970000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -375,7 +393,7 @@
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.27785236" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15033557" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -413,7 +431,21 @@
     <MESSAGE value="Save page data, save link added." />
     <MESSAGE value="save to db v2" />
     <MESSAGE value="canonical urls, page content duplicate detection, cleaned html page." />
-    <option name="LAST_COMMIT_MESSAGE" value="canonical urls, page content duplicate detection, cleaned html page." />
+    <MESSAGE value="// some fixes" />
+    <MESSAGE value="// response code check" />
+    <option name="LAST_COMMIT_MESSAGE" value="// response code check" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/com/company/Main.java</url>
+          <line>26</line>
+          <properties />
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="antWorkspaceConfiguration">
     <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
@@ -424,30 +456,37 @@
     <entry file="file://$PROJECT_DIR$/lala" />
     <entry file="file://$PROJECT_DIR$/src/Robots.java" />
     <entry file="file://$PROJECT_DIR$/src/com/company/Robots.java" />
-    <entry file="file://$PROJECT_DIR$/src/com/company/DB/Image.java">
+    <entry file="file://$PROJECT_DIR$/src/com/company/Scheduler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="706">
-          <caret line="67" column="5" selection-start-line="67" selection-start-column="5" selection-end-line="67" selection-end-column="5" />
+        <state relative-caret-position="408">
+          <caret line="24" column="34" selection-start-line="24" selection-start-column="34" selection-end-line="24" selection-end-column="34" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/company/DB/Link.java">
+    <entry file="file://$PROJECT_DIR$/src/com/company/DB/Site.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        <state relative-caret-position="68">
+          <caret line="4" column="19" selection-start-line="4" selection-start-column="19" selection-end-line="4" selection-end-column="19" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/DB/Page.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="212">
+        <state relative-caret-position="255">
           <caret line="15" column="19" selection-start-line="15" selection-start-column="19" selection-end-line="15" selection-end-column="19" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/DB/PageData.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-203">
+        <state relative-caret-position="34">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/company/DB/Link.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
           <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
         </state>
       </provider>
@@ -459,13 +498,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/company/DB/Site.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-186">
-          <caret line="4" column="19" selection-start-line="4" selection-start-column="19" selection-end-line="4" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/DB/DataType.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="34">
@@ -473,10 +505,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/company/DB/DBManager.java">
+    <entry file="file://$PROJECT_DIR$/../../Magisterij/1. letnik/Algoritmi/Seminar1/Seminar1.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="189" selection-start-line="189" selection-end-line="189" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/company/DB/Image.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="381">
-          <caret line="28" column="9" selection-start-line="28" selection-start-column="9" selection-end-line="28" selection-end-column="9" />
+          <caret line="67" column="5" selection-start-line="67" selection-start-column="5" selection-end-line="67" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/company/DB/DBManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="40">
+          <caret line="32" column="24" selection-start-line="32" selection-start-column="15" selection-end-line="32" selection-end-column="24" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -485,25 +534,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/WebCrawler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="174">
-          <caret line="278" column="25" lean-forward="true" selection-start-line="278" selection-start-column="25" selection-end-line="278" selection-end-column="25" />
+        <state relative-caret-position="116">
+          <caret line="44" selection-start-line="44" selection-end-line="44" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/company/Scheduler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="185">
-          <caret line="24" column="34" selection-start-line="24" selection-start-column="34" selection-end-line="24" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="104">
-          <caret line="15" column="42" selection-start-line="15" selection-start-column="42" selection-end-line="15" selection-end-column="42" />
+        <state relative-caret-position="296">
+          <caret line="26" selection-start-line="26" selection-end-line="26" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
