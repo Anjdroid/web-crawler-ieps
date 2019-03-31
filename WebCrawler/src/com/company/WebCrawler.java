@@ -2,8 +2,10 @@ package com.company;
 
 import com.company.DB.*;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
+import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.apache.http.protocol.HTTP;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -265,10 +267,11 @@ public class WebCrawler implements Runnable {
                         webClient.getOptions().setThrowExceptionOnScriptError(false);
 
                         // download page
-                        final com.gargoylesoftware.htmlunit.Page page = webClient.getPage(protocol + pageToCrawl);
-                        int statusCode = page.getWebResponse().getStatusCode();
-
-                        if (statusCode != 404 && statusCode != 500) {
+                        final com.gargoylesoftware.htmlunit.Page page;
+                        int statusCode;
+                        try {
+                            page = webClient.getPage(protocol + pageToCrawl);
+                            statusCode = page.getWebResponse().getStatusCode();
 
                             // wait 5s for JS to load
                             webClient.waitForBackgroundJavaScriptStartingBefore(5000);
@@ -346,8 +349,13 @@ public class WebCrawler implements Runnable {
                                 Main.db.setLinkToFromPage(new Link(Main.db.getPageFromUrl(parentPage, conn).getId(),
                                         Main.db.getPageFromUrl(pageToCrawl, conn).getId()), conn);
                             }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            if (e instanceof FailingHttpStatusCodeException) {
+                                statusCode = ((FailingHttpStatusCodeException) e).getStatusCode();
+                            }
                         }
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         LOGGER.info("Error for: " + pageToCrawl);
                         e.printStackTrace();
                     }
