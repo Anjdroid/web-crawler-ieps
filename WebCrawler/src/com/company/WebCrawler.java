@@ -46,318 +46,319 @@ public class WebCrawler implements Runnable {
             // get URL from frontier
             String pageToCrawl = Main.scheduler.getFrontier().poll();
 
-            // add url to visited pages
-            Main.scheduler.getVisited().add(pageToCrawl);
+            if (pageToCrawl != null) {
 
-            if (Main.db.checkSize(conn) > 100000) {
-                LOGGER.info("100.000 pages visited");
-                return;
-            }
+                // add url to visited pages
+                Main.scheduler.getVisited().add(pageToCrawl);
 
-            LOGGER.info("Current page: " + pageToCrawl+ " running on thread: "+ Thread.currentThread().getId() );
-
-            int pageId = -1;
-
-            // get cannonical URL of page
-            pageToCrawl = getCanonicalURL(protocol+pageToCrawl);
-
-            // first check if page is a duplicate in visited pages set
-            if (Scheduler.isDuplicate(pageToCrawl)) {
-                // save page as DUPLICATE to database
-                Page duplicate = Main.db.getPageFromUrl(pageToCrawl, conn);
-                saveDuplicate(pageToCrawl, duplicate);
-            } else {
-
-                // get page domain
-                String domain = getDomainName(protocol+pageToCrawl);
-
-                boolean robotsExist = false;
-
-                // get side id from DB if site exists
-                int siteId = Main.db.getSiteFromDomain(domain, conn);
-
-                StringBuffer sitemaps = new StringBuffer();
-                StringBuffer robotsTxt = new StringBuffer();
-
-                if (siteId == -1) {
-                    // domain is not in DB
-                    // we collect robots.txt and sitemap content
-
-                    try {
-                        URL robotsUrl = new URL(protocol + domain + "/robots.txt");
-                        HttpURLConnection robotsUrlCon = (HttpURLConnection) robotsUrl.openConnection();
-                        robotsUrlCon.setReadTimeout(5000);
-
-                        boolean redirect = false;
-
-                        int status = robotsUrlCon.getResponseCode();
-                        if (status != HttpURLConnection.HTTP_OK) {
-                            if (status == HttpURLConnection.HTTP_MOVED_TEMP
-                                    || status == HttpURLConnection.HTTP_MOVED_PERM
-                                    || status == HttpURLConnection.HTTP_SEE_OTHER)
-                                redirect = true;
-                        }
-
-                        if (redirect) {
-                            // get redirect url from "location" header field
-                            String newUrl = robotsUrlCon.getHeaderField("Location");
-
-                            // open the new connnection again
-                            robotsUrlCon = (HttpURLConnection) new URL(newUrl).openConnection();
-                        }
-
-                        BufferedReader in = new BufferedReader(new InputStreamReader(robotsUrlCon.getInputStream()));
-                        String line;
-
-                        // checking only for User-Agent: *
-                        boolean ourUserAgent = false;
-
-                        ArrayList<String> allowL = new ArrayList<>();
-                        ArrayList<String> disallowL = new ArrayList<>();
-                        ArrayList<String> sitemapL = new ArrayList<>();
-                        int crawlDel = 4;
-
-                        // reading robots.txt file
-                        while ((line = in.readLine()) != null) {
-                            robotsTxt.append(line);
-                            if ((line.contains("User-Agent: *")) || (line.contains("User-agent: *"))) {
-                                ourUserAgent = true;
-                            }
-                            if (((line.contains("User-Agent:")) && (!line.contains("User-Agent: *"))) || ((line.contains("User-agent:")) && (!line.contains("User-agent: *")))) {
-                                ourUserAgent = false;
-                            }
-                            if (ourUserAgent) {
-                                if ((line.contains("Disallow:")) && ((line.replace("Disallow: ", "")).length() > 0)) {
-                                    disallowL.add(line.replace("Disallow: ", ""));
-                                }
-                                if ((line.contains("Allow:")) && ((line.replace("Allow: ", "")).length() > 1)) {
-                                    allowL.add(line.replace("Allow: ", ""));
-                                }
-                                if ((line.contains("Crawl-delay:")) && ((line.replace("Crawl-delay: ", "")).length() > 0)) {
-                                    crawlDel = Integer.parseInt(line.replace("Crawl-delay: ", ""));
-                                }
-                            }
-                            if ((line.contains("Sitemap:")) && ((line.replace("Sitemap: ", "")).length() > 0)) {
-                                sitemapL.add(line.replace("Sitemap: ", ""));
-                            }
-                            robotsTxt.append("\n");
-                        }
-
-                        // setting allowed and disallowed pages for domain
-                        Main.scheduler.getAllowed().put(domain, allowL);
-                        Main.scheduler.getDisallowed().put(domain, disallowL);
-                        // setting crawl delay for domain
-                        Main.scheduler.getCrawlDelay().put(domain, crawlDel);
-
-                        // checking for multiple sitemaps
-                        for (String s : sitemapL) {
-
-                            URL sitemapUrl = new URL(s);
-                            URLConnection sitemapUrlCon = sitemapUrl.openConnection();
-                            BufferedReader inSitemap = new BufferedReader(new InputStreamReader(sitemapUrlCon.getInputStream()));
-                            String line2;
-
-                            while ((line2 = inSitemap.readLine()) != null) {
-                                sitemaps.append(line2);
-
-                                while (line2.contains("<loc>")) {
-                                    int start = line2.indexOf("<loc>");
-                                    int end = line2.indexOf("</loc>");
-                                    String stran2 = line2.substring(start + 5, end);
-                                    line2 = line2.replace(line2.substring(start, end + 6), "");
-
-                                    // fix sitemap url
-                                    stran2 = stran2.contains(protocol) ? stran2.replace(protocol, "") : stran2;
-                                    stran2 = stran2.contains("https://") ? stran2.replace("https://", "") : stran2;
-                                    stran2 = stran2.contains("www.") ? stran2.replace("www.", "") : stran2;
-
-                                    // adding all pages from sitemap to frontier
-                                    Main.scheduler.getFrontier().add(stran2);
-                                }
-                                sitemaps.append("\n");
-                            }
-                        }
-
-                        // we were able to get robots.txt content
-                        robotsExist = true;
-                    } catch (Exception e) {
-                        LOGGER.info("ERROR getting robots content for domain: "+domain);
-                        e.printStackTrace();
-                        // robots file doesn't exist
-                        robotsExist = false;
-                    }
+                if (Main.db.checkSize(conn) > 100000) {
+                    LOGGER.info("100.000 pages visited");
+                    return;
                 }
 
-                if (!Main.scheduler.getCrawlDelay().containsKey(domain)) {
-                    int crawlDel = 4;
-                    Main.scheduler.getCrawlDelay().put(domain, crawlDel);
-                }
+                LOGGER.info("Current page: " + pageToCrawl + " running on thread: " + Thread.currentThread().getId());
 
-                boolean allowCrawl = true;
+                int pageId = -1;
 
-                // check if we can crawl the page
-                if (robotsExist) {
+                // get cannonical URL of page
+                pageToCrawl = getCanonicalURL(protocol + pageToCrawl);
 
-                    HashMap<String, ArrayList<String>> checkDisallowed = Main.scheduler.getDisallowed();
-                    if (checkDisallowed.containsKey(domain)) {
-                        // disallow pages list
-                        ArrayList<String> disallowedPages = checkDisallowed.get(domain);
-                        outerloop:
-                        for (String disa : disallowedPages) {
-                            String disaH = disa;
-                            if ((disaH.substring(disaH.length() - 1)).contains("*")) {
-                                disaH = disaH.substring(0, disaH.length()-1);
-                            }
-                            if ((disaH.substring(0,1)).contains("*")) {
-                                disaH = disaH.substring(1);
-                            }
-                            else if ((disaH.length() > 1) && ((disaH.substring(0,2)).contains("/*"))) {
-                                disaH = disaH.substring(2);
-                            }
-                            if (pageToCrawl.contains(disaH)) {
-                                allowCrawl = false;
-                                HashMap<String, ArrayList<String>> checkAllowed = Main.scheduler.getAllowed();
-                                if (checkAllowed.containsKey(domain)) {
-                                    // allow page list
-                                    ArrayList<String> allowedPages = checkAllowed.get(domain);
-                                    for (String a : allowedPages) {
-                                        String aH = a;
-                                        if ((aH.substring(aH.length() - 1)).contains("*")) {
-                                            aH = aH.substring(0, aH.length()-1);
-                                        }
-                                        if ((aH.substring(0,1)).contains("*")) {
-                                            aH = aH.substring(1);
-                                        }
-                                        else if ((aH.substring(0,2)).contains("/*")) {
-                                            aH = aH.substring(2);
-                                        }
-                                        if (pageToCrawl.contains(aH)) {
-                                            allowCrawl = true;
-                                            break outerloop;
-                                        }
-                                    }
-                                } else {
-                                    allowCrawl = false;
-                                }
-                            }
-                        }
-                    }
-                }
+                // first check if page is a duplicate in visited pages set
+                if (Scheduler.isDuplicate(pageToCrawl)) {
+                    // save page as DUPLICATE to database
+                    Page duplicate = Main.db.getPageFromUrl(pageToCrawl, conn);
+                    saveDuplicate(pageToCrawl, duplicate);
+                } else {
 
-                if (allowCrawl) {
-                    if (Main.scheduler.getCrawlDelay().containsKey(domain)) {
-                        // getting crawl delay for domain
-                        int spi = Main.scheduler.getCrawlDelay().get(domain);
-                        spi = spi * 1000;
+                    // get page domain
+                    String domain = getDomainName(protocol + pageToCrawl);
+
+                    boolean robotsExist = false;
+
+                    // get side id from DB if site exists
+                    int siteId = Main.db.getSiteFromDomain(domain, conn);
+
+                    StringBuffer sitemaps = new StringBuffer();
+                    StringBuffer robotsTxt = new StringBuffer();
+
+                    if (siteId == -1) {
+                        // domain is not in DB
+                        // we collect robots.txt and sitemap content
 
                         try {
-                            Thread.sleep(spi);
-                        } catch (Exception e) {
-                            System.out.println("ERROR: " + e.getMessage());
-                        }
-                    }
+                            URL robotsUrl = new URL(protocol + domain + "/robots.txt");
+                            HttpURLConnection robotsUrlCon = (HttpURLConnection) robotsUrl.openConnection();
+                            robotsUrlCon.setReadTimeout(5000);
 
-                    try {
-                        // access time of URL
-                        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                            boolean redirect = false;
 
-                        // initialize htmlUnit webclient
-                        final WebClient webClient = new WebClient(BrowserVersion.BEST_SUPPORTED);
-                        webClient.getOptions().setJavaScriptEnabled(true);
-                        webClient.getOptions().setThrowExceptionOnScriptError(false);
+                            int status = robotsUrlCon.getResponseCode();
+                            if (status != HttpURLConnection.HTTP_OK) {
+                                if (status == HttpURLConnection.HTTP_MOVED_TEMP
+                                        || status == HttpURLConnection.HTTP_MOVED_PERM
+                                        || status == HttpURLConnection.HTTP_SEE_OTHER)
+                                    redirect = true;
+                            }
 
-                        // download page
-                        final com.gargoylesoftware.htmlunit.Page page;
-                        int statusCode;
-                        try {
-                            page = webClient.getPage(protocol + pageToCrawl);
-                            statusCode = page.getWebResponse().getStatusCode();
+                            if (redirect) {
+                                // get redirect url from "location" header field
+                                String newUrl = robotsUrlCon.getHeaderField("Location");
 
-                            // wait 5s for JS to load
-                            webClient.waitForBackgroundJavaScriptStartingBefore(5000);
+                                // open the new connnection again
+                                robotsUrlCon = (HttpURLConnection) new URL(newUrl).openConnection();
+                            }
 
-                            String contentType = page.getWebResponse().getContentType();
+                            BufferedReader in = new BufferedReader(new InputStreamReader(robotsUrlCon.getInputStream()));
+                            String line;
 
-                            if (docs.contains(contentType)) {
-                                // page is a document
-                                LOGGER.info("is document");
+                            // checking only for User-Agent: *
+                            boolean ourUserAgent = false;
 
-                                // get site id and save site to db
-                                siteId = getSiteId(domain, sitemaps.toString(), robotsTxt.toString());
-                                // save page as BINARY to DB
-                                pageId = Main.db.savePage(new Page(siteId, "BINARY", pageToCrawl, null, statusCode, timestamp, 0), conn);
-                                // read file data
-                                byte[] fileData = readImageFromUrl(pageToCrawl, pageToCrawl, true);
-                                // save document to DB
-                                Main.db.savePageData(new PageData(pageId, getFileExtension(contentType), fileData), conn);
-                            } else if (contentType.equals("text/html")) {
-                                // page is html content
+                            ArrayList<String> allowL = new ArrayList<>();
+                            ArrayList<String> disallowL = new ArrayList<>();
+                            ArrayList<String> sitemapL = new ArrayList<>();
+                            int crawlDel = 4;
 
-                                // get site id and save site to DB
-                                siteId = getSiteId(domain, sitemaps.toString(), robotsTxt.toString());
-
-                                HtmlPage htmlPage = (HtmlPage) page;
-                                Document document = Jsoup.parse(htmlPage.asXml());
-
-                                // get cleaned HTML
-                                String cleanDoc = Jsoup.clean(document.html(), Whitelist.relaxed());
-                                Document cleaned = Jsoup.parse(cleanDoc);
-
-                                int pageContentHash = cleaned.html().hashCode();
-                                // duplicate detection: check if hashcode is in database
-                                Page pageDuplicate = isContentDuplicate(pageContentHash);
-                                if (pageDuplicate.getId() > 0) {
-                                    saveDuplicate(pageToCrawl, pageDuplicate);
-                                } else {
-                                    // page is not a duplicate
-
-                                    pageId = Main.db.savePage(new Page(siteId, "HTML", pageToCrawl, cleaned.html(), statusCode, timestamp, pageContentHash), conn);
-
-                                    // fetch images on page
-                                    Elements imagesOnPage = document.select("img[src~=(?i)\\.(png|jpe?g|svg|gif)]");
-
-                                    // extract images
-                                    findImagesOnPage(imagesOnPage, pageId, false);
-
-                                    // parse HTML to extract <a /> attrs with links
-                                    Elements linksOnPage = document.select("a[href]");
-
-                                    // getting all the links from the page
-                                    for (Element p : linksOnPage) {
-                                        String pageUrl = p.attr("abs:href");
-
-                                        if (!pageUrl.equals("")) {
-
-                                            LOGGER.info("page url: " + pageUrl + " from page " + pageToCrawl);
-                                            if (pageUrl.contains("//")) {
-                                                pageUrl = pageUrl.split("//")[1];
-                                            }
-
-                                            // add page to frontier
-                                            Main.scheduler.getFrontier().add(pageUrl);
-                                            Main.scheduler.getParentChild().put(pageUrl, pageToCrawl);
-
-                                        }
+                            // reading robots.txt file
+                            while ((line = in.readLine()) != null) {
+                                robotsTxt.append(line);
+                                if ((line.contains("User-Agent: *")) || (line.contains("User-agent: *"))) {
+                                    ourUserAgent = true;
+                                }
+                                if (((line.contains("User-Agent:")) && (!line.contains("User-Agent: *"))) || ((line.contains("User-agent:")) && (!line.contains("User-agent: *")))) {
+                                    ourUserAgent = false;
+                                }
+                                if (ourUserAgent) {
+                                    if ((line.contains("Disallow:")) && ((line.replace("Disallow: ", "")).length() > 0)) {
+                                        disallowL.add(line.replace("Disallow: ", ""));
+                                    }
+                                    if ((line.contains("Allow:")) && ((line.replace("Allow: ", "")).length() > 1)) {
+                                        allowL.add(line.replace("Allow: ", ""));
+                                    }
+                                    if ((line.contains("Crawl-delay:")) && ((line.replace("Crawl-delay: ", "")).length() > 0)) {
+                                        crawlDel = Integer.parseInt(line.replace("Crawl-delay: ", ""));
                                     }
                                 }
+                                if ((line.contains("Sitemap:")) && ((line.replace("Sitemap: ", "")).length() > 0)) {
+                                    sitemapL.add(line.replace("Sitemap: ", ""));
+                                }
+                                robotsTxt.append("\n");
                             }
-                            // set link from to page
-                            String parentPage = Main.scheduler.getParentChild().get(pageToCrawl);
-                            if (parentPage != null) {
-                                LOGGER.info("setting link page url: " + parentPage + " " + Main.db.getPageFromUrl(parentPage, conn).getId() +
-                                        " to page: " + pageId + " " + pageToCrawl);
-                                Main.db.setLinkToFromPage(new Link(Main.db.getPageFromUrl(parentPage, conn).getId(),
-                                        Main.db.getPageFromUrl(pageToCrawl, conn).getId()), conn);
+
+                            // setting allowed and disallowed pages for domain
+                            Main.scheduler.getAllowed().put(domain, allowL);
+                            Main.scheduler.getDisallowed().put(domain, disallowL);
+                            // setting crawl delay for domain
+                            Main.scheduler.getCrawlDelay().put(domain, crawlDel);
+
+                            // checking for multiple sitemaps
+                            for (String s : sitemapL) {
+
+                                URL sitemapUrl = new URL(s);
+                                URLConnection sitemapUrlCon = sitemapUrl.openConnection();
+                                BufferedReader inSitemap = new BufferedReader(new InputStreamReader(sitemapUrlCon.getInputStream()));
+                                String line2;
+
+                                while ((line2 = inSitemap.readLine()) != null) {
+                                    sitemaps.append(line2);
+
+                                    while (line2.contains("<loc>")) {
+                                        int start = line2.indexOf("<loc>");
+                                        int end = line2.indexOf("</loc>");
+                                        String stran2 = line2.substring(start + 5, end);
+                                        line2 = line2.replace(line2.substring(start, end + 6), "");
+
+                                        // fix sitemap url
+                                        stran2 = stran2.contains(protocol) ? stran2.replace(protocol, "") : stran2;
+                                        stran2 = stran2.contains("https://") ? stran2.replace("https://", "") : stran2;
+                                        stran2 = stran2.contains("www.") ? stran2.replace("www.", "") : stran2;
+
+                                        // adding all pages from sitemap to frontier
+                                        Main.scheduler.getFrontier().add(stran2);
+                                    }
+                                    sitemaps.append("\n");
+                                }
                             }
+
+                            // we were able to get robots.txt content
+                            robotsExist = true;
                         } catch (Exception e) {
+                            LOGGER.info("ERROR getting robots content for domain: " + domain);
                             e.printStackTrace();
-                            if (e instanceof FailingHttpStatusCodeException) {
-                                statusCode = ((FailingHttpStatusCodeException) e).getStatusCode();
+                            // robots file doesn't exist
+                            robotsExist = false;
+                        }
+                    }
+
+                    if (!Main.scheduler.getCrawlDelay().containsKey(domain)) {
+                        int crawlDel = 4;
+                        Main.scheduler.getCrawlDelay().put(domain, crawlDel);
+                    }
+
+                    boolean allowCrawl = true;
+
+                    // check if we can crawl the page
+                    if (robotsExist) {
+
+                        HashMap<String, ArrayList<String>> checkDisallowed = Main.scheduler.getDisallowed();
+                        if (checkDisallowed.containsKey(domain)) {
+                            // disallow pages list
+                            ArrayList<String> disallowedPages = checkDisallowed.get(domain);
+                            outerloop:
+                            for (String disa : disallowedPages) {
+                                String disaH = disa;
+                                if ((disaH.substring(disaH.length() - 1)).contains("*")) {
+                                    disaH = disaH.substring(0, disaH.length() - 1);
+                                }
+                                if ((disaH.substring(0, 1)).contains("*")) {
+                                    disaH = disaH.substring(1);
+                                } else if ((disaH.length() > 1) && ((disaH.substring(0, 2)).contains("/*"))) {
+                                    disaH = disaH.substring(2);
+                                }
+                                if (pageToCrawl.contains(disaH)) {
+                                    allowCrawl = false;
+                                    HashMap<String, ArrayList<String>> checkAllowed = Main.scheduler.getAllowed();
+                                    if (checkAllowed.containsKey(domain)) {
+                                        // allow page list
+                                        ArrayList<String> allowedPages = checkAllowed.get(domain);
+                                        for (String a : allowedPages) {
+                                            String aH = a;
+                                            if ((aH.substring(aH.length() - 1)).contains("*")) {
+                                                aH = aH.substring(0, aH.length() - 1);
+                                            }
+                                            if ((aH.substring(0, 1)).contains("*")) {
+                                                aH = aH.substring(1);
+                                            } else if ((aH.substring(0, 2)).contains("/*")) {
+                                                aH = aH.substring(2);
+                                            }
+                                            if (pageToCrawl.contains(aH)) {
+                                                allowCrawl = true;
+                                                break outerloop;
+                                            }
+                                        }
+                                    } else {
+                                        allowCrawl = false;
+                                    }
+                                }
                             }
                         }
-                    } catch (Exception e) {
-                        LOGGER.info("Error for: " + pageToCrawl);
-                        e.printStackTrace();
+                    }
+
+                    if (allowCrawl) {
+                        if (Main.scheduler.getCrawlDelay().containsKey(domain)) {
+                            // getting crawl delay for domain
+                            int spi = Main.scheduler.getCrawlDelay().get(domain);
+                            spi = spi * 1000;
+
+                            try {
+                                Thread.sleep(spi);
+                            } catch (Exception e) {
+                                System.out.println("ERROR: " + e.getMessage());
+                            }
+                        }
+
+                        try {
+                            // access time of URL
+                            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+                            // initialize htmlUnit webclient
+                            final WebClient webClient = new WebClient(BrowserVersion.BEST_SUPPORTED);
+                            webClient.getOptions().setJavaScriptEnabled(true);
+                            webClient.getOptions().setThrowExceptionOnScriptError(false);
+
+                            // download page
+                            final com.gargoylesoftware.htmlunit.Page page;
+                            int statusCode;
+                            try {
+                                page = webClient.getPage(protocol + pageToCrawl);
+                                statusCode = page.getWebResponse().getStatusCode();
+
+                                // wait 5s for JS to load
+                                webClient.waitForBackgroundJavaScriptStartingBefore(5000);
+
+                                String contentType = page.getWebResponse().getContentType();
+
+                                if (docs.contains(contentType)) {
+                                    // page is a document
+                                    LOGGER.info("is document");
+
+                                    // get site id and save site to db
+                                    siteId = getSiteId(domain, sitemaps.toString(), robotsTxt.toString());
+                                    // save page as BINARY to DB
+                                    pageId = Main.db.savePage(new Page(siteId, "BINARY", pageToCrawl, null, statusCode, timestamp, 0), conn);
+                                    // read file data
+                                    byte[] fileData = readImageFromUrl(pageToCrawl, pageToCrawl, true);
+                                    // save document to DB
+                                    Main.db.savePageData(new PageData(pageId, getFileExtension(contentType), fileData), conn);
+                                } else if (contentType.equals("text/html")) {
+                                    // page is html content
+
+                                    // get site id and save site to DB
+                                    siteId = getSiteId(domain, sitemaps.toString(), robotsTxt.toString());
+
+                                    HtmlPage htmlPage = (HtmlPage) page;
+                                    Document document = Jsoup.parse(htmlPage.asXml());
+
+                                    // get cleaned HTML
+                                    String cleanDoc = Jsoup.clean(document.html(), Whitelist.relaxed());
+                                    Document cleaned = Jsoup.parse(cleanDoc);
+
+                                    int pageContentHash = cleaned.html().hashCode();
+                                    // duplicate detection: check if hashcode is in database
+                                    Page pageDuplicate = isContentDuplicate(pageContentHash);
+                                    if (pageDuplicate.getId() > 0) {
+                                        saveDuplicate(pageToCrawl, pageDuplicate);
+                                    } else {
+                                        // page is not a duplicate
+
+                                        pageId = Main.db.savePage(new Page(siteId, "HTML", pageToCrawl, cleaned.html(), statusCode, timestamp, pageContentHash), conn);
+
+                                        // fetch images on page
+                                        Elements imagesOnPage = document.select("img[src~=(?i)\\.(png|jpe?g|svg|gif)]");
+
+                                        // extract images
+                                        findImagesOnPage(imagesOnPage, pageId, false);
+
+                                        // parse HTML to extract <a /> attrs with links
+                                        Elements linksOnPage = document.select("a[href]");
+
+                                        // getting all the links from the page
+                                        for (Element p : linksOnPage) {
+                                            String pageUrl = p.attr("abs:href");
+
+                                            if (!pageUrl.equals("")) {
+
+                                                LOGGER.info("page url: " + pageUrl + " from page " + pageToCrawl);
+                                                if (pageUrl.contains("//")) {
+                                                    pageUrl = pageUrl.split("//")[1];
+                                                }
+
+                                                // add page to frontier
+                                                Main.scheduler.getFrontier().add(pageUrl);
+                                                Main.scheduler.getParentChild().put(pageUrl, pageToCrawl);
+
+                                            }
+                                        }
+                                    }
+                                }
+                                // set link from to page
+                                String parentPage = Main.scheduler.getParentChild().get(pageToCrawl);
+                                if (parentPage != null) {
+                                    LOGGER.info("setting link page url: " + parentPage + " " + Main.db.getPageFromUrl(parentPage, conn).getId() +
+                                            " to page: " + pageId + " " + pageToCrawl);
+                                    Main.db.setLinkToFromPage(new Link(Main.db.getPageFromUrl(parentPage, conn).getId(),
+                                            Main.db.getPageFromUrl(pageToCrawl, conn).getId()), conn);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                if (e instanceof FailingHttpStatusCodeException) {
+                                    statusCode = ((FailingHttpStatusCodeException) e).getStatusCode();
+                                }
+                            }
+                        } catch (Exception e) {
+                            LOGGER.info("Error for: " + pageToCrawl);
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
