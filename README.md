@@ -20,9 +20,9 @@ Retrieved data is stored in PostgreSQL database.
 - set up database using prepared script in the directory (baza.sql)
 - open project in IntelliJ Idea
 - setup parameters in class Main.java:
-		* url = "jdbc:postgresql://localhost:5432/"
-        * dbName = <DBname>
-        * user = <PostgreSQLuser>
-		* password = <PostgreSQLpassword>
-    	* numberOfThreads = <wantedNumberOfThreads>
+		- url = "jdbc:postgresql://localhost:5432/"
+        - dbName = <DBname>
+        - user = <PostgreSQLuser>
+		- password = <PostgreSQLpassword>
+    	- numberOfThreads = <wantedNumberOfThreads>
 - Run

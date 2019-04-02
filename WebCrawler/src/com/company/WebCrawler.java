@@ -190,6 +190,7 @@ public class WebCrawler implements Runnable {
                         }
                     }
 
+                    // setting initial crawl delay
                     if (!Main.scheduler.getCrawlDelay().containsKey(domain)) {
                         int crawlDel = 4;
                         Main.scheduler.getCrawlDelay().put(domain, crawlDel);
@@ -258,6 +259,7 @@ public class WebCrawler implements Runnable {
                         }
 
                         try {
+                            // we try to download the page
                             // access time of URL
                             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
@@ -278,6 +280,7 @@ public class WebCrawler implements Runnable {
 
                                 String contentType = page.getWebResponse().getContentType();
 
+                                // downloading documents
                                 if (docs.contains(contentType)) {
                                     // page is a document
                                     LOGGER.info("is document");
@@ -292,6 +295,7 @@ public class WebCrawler implements Runnable {
                                     Main.db.savePageData(new PageData(pageId, getFileExtension(contentType), fileData), conn);
                                 } else if (contentType.equals("text/html")) {
                                     // page is html content
+                                    // downloading HTML pages
 
                                     // get site id and save site to DB
                                     siteId = getSiteId(domain, sitemaps.toString(), robotsTxt.toString());
@@ -307,6 +311,7 @@ public class WebCrawler implements Runnable {
                                     // duplicate detection: check if hashcode is in database
                                     Page pageDuplicate = isContentDuplicate(pageContentHash);
                                     if (pageDuplicate.getId() > 0) {
+                                        // page is a duplicate
                                         saveDuplicate(pageToCrawl, pageDuplicate);
                                     } else {
                                         // page is not a duplicate
