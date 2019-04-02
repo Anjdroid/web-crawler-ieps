@@ -21,8 +21,8 @@ The crawler consists of several parts:
 - open project in IntelliJ Idea
 - setup parameters in class Main.java:
 	- url = "jdbc:postgresql://localhost:5432/"
-        - dbName = <DBname>
-        - user = <PostgreSQLuser>
-	- password = <PostgreSQLpassword>
-    	- numberOfThreads = <wantedNumberOfThreads>
+	- dbName = "<DBname>"
+	- user = "<PostgreSQLuser>"
+	- password = "<PostgreSQLpassword>"
+	- numberOfThreads = "<wantedNumberOfThreads>"
 - Run
