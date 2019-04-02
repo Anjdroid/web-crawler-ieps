@@ -20,9 +20,9 @@ The crawler consists of several parts:
 - set up database using prepared script in the directory (baza.sql)
 - open project in IntelliJ Idea
 - setup parameters in class Main.java:
-		- url = "jdbc:postgresql://localhost:5432/"
+	- url = "jdbc:postgresql://localhost:5432/"
         - dbName = <DBname>
         - user = <PostgreSQLuser>
-		- password = <PostgreSQLpassword>
+	- password = <PostgreSQLpassword>
     	- numberOfThreads = <wantedNumberOfThreads>
 - Run
