@@ -1,0 +1,51 @@
+{
+ "name": "Prenešene vsebine",
+ "children": [
+  {
+   "name": "Domene",
+   "children": [
+    {
+     "name": "(1) Domene: 195", "value": 195},
+     {"name": "(2) Domene: 265", "value": 265},
+   ]
+    },
+
+    {
+   "name": "Spletne strani",
+   "children": [
+    {
+     "name": "(1) Spletne strani: 5366", "children": [
+      {"name": "HTML: 3526", "value": 3526},
+       {"name": "Duplikat: 1249", "value": 1249},
+        {"name": "Binarna vsebina: 591", "value": 591},
+    ]},
+     {"name": "(2) spletne strani: 6393", "children": [
+      {"name": "HTML: 4448", "value": 4448},
+       {"name": "Duplikat: 1945", "value": 1945},
+        {"name": "Binarna vsebina: 0", "value": 0},
+    ]},
+
+     {
+   "name": "Slike",
+   "children": [
+    {
+     "name": "(1) Slike: 5366", "children": [
+      {"name": "PNG: 8832", "value": 8832},
+       {"name": "GIF", "value": 3876},
+        {"name": "JPEG: 6897", "value": 6897},
+        {"name": "SVG: 60", "value": 60},
+    ]},
+   {
+   "name": "Dokumenti",
+   "children": [
+    {
+     "name": "(1) Dokumenti: 591", "children": [
+      {"name": "PDF: 542", "value": 542},
+       {"name": "PPTX: 0", "value": 0},
+        {"name": "PPT: 2", "value": 2},
+        {"name": "DOC: 45", "value": 45},
+        {"name": "DOCX: 2", "value": 2},
+    ]}
+
+    ]    
+}
