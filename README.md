@@ -5,8 +5,8 @@ Implementation of web crawler in Java that crawls .gov.si web sites.
 The crawler consists of several parts:
 - HTTP downloader and renderer, implemented with HTMLUnit
 - Data extractor, implemented with JSoup
-	- extracting links from web pages from href in <a></a> tags
-	- extracting images from <img /> tags
+	- extracting links from web pages from href in a tags
+	- extracting images from img tags
 	- extracting documents (.pdf, .doc, .docx, .ppt, .pptx)
 - Duplicate detector - we detect already visited and parsed pages (based on hashes of HTML content) 
 - URL Frontier implemented as a Queue
