@@ -12,7 +12,7 @@ The crawler consists of several parts:
 - URL Frontier implemented as a Queue
 	- parsing robots.txt files and crawling only allowed pages with specified crawl delay
 	- adding links from sitemap directly to frontier
-- The crawler follows breadth-first strategy strategy for extracting links and allows parallel retrieval implemented with threads. 
+- The crawler follows breadth-first strategy strategy for extracting links and allows parallel retrieval implemented with Java Threads and ExecutorService.
 - Retrieved data is stored in PostgreSQL database.
 
 *** HOW TO RUN
